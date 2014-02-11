@@ -6,6 +6,8 @@
 #define TF_LPRECOGNITION_H
 #include <windows.h>
 
+
+
 //车牌类型
 typedef enum
 {
@@ -20,6 +22,7 @@ typedef enum
 	E_TF_OTHER,        //其类型
 }TF_LPlateType;
 
+
 //车身颜色
 typedef enum
 {
@@ -27,7 +30,7 @@ typedef enum
 	E_TF_VC_WHITE,    //白
 	E_TF_VC_SILVER,   //灰
 	E_TF_VC_YELLOW,   //黄
-	E_TF_VC_RED,	    //红
+	E_TF_VC_RED,	  //红
 	E_TF_VC_GREEN,    //绿
 	E_TF_VC_BLUE,     //蓝
 	E_TF_VC_BLACK,    //黑
@@ -64,18 +67,21 @@ typedef struct
 	int iMilliseconds;
 }TF_Time;
 
+
+
+
 typedef struct  TF_Result
 {
 	char number[20];            //识别结果
 	TF_Rect PlateRect;         //车牌位置
 	float fConfidence;          //车牌置信度
 	TF_LPlateType ePlateType;  //车牌类型
-	int iMoveDir;               //车辆运动方向 0：朝近运动，1：朝远运动，-1：未知
+	int iMoveDir;               //车辆运动方向 -1：未知, 0：朝近运动，1：朝远运动，
 	TF_LVehicleColor eVColor1; //车身主颜色
 	TF_LVehicleColor eVColor2; //车身次颜色
 	unsigned char *pResultBits; //视频识别模式中抓拍的图片,视频模式识别下有效，需要开辟
 	TF_Time sTime;             //视频识别模式中抓拍此张图的时间     
-	
+	long	takesTime; //耗时
 	//TF_Result& operator=(TF_Result &re){
 	//	memcpy(number, re.number);
 	//	return *this;
