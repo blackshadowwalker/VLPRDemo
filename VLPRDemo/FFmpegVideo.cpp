@@ -366,12 +366,13 @@ int FFmpegVideo::getOneFrame()
 					sws_scale(ctx, pFrameOri->data, pFrameOri->linesize,
 						0, pCodecCtx->height,pFrameRGB->data,
 						pFrameRGB->linesize);
+					imageFrame->widthStep = pFrameRGB->linesize[0];
 
 					//    sws_scale(ctx, pFrame->data, pFrame->linesize,
 					//     0, pCodecCtx->height,pict.data, pict.linesize);
 
 					// Save the frame to disk
-			//		memcpy(imageFrame->imageData, pFrameBGR->data[0], pFrameBGR->linesize[0]*imageFrame->height);
+					memcpy(imageFrame->imageData, pFrameBGR->data[0], pFrameBGR->linesize[0]*imageFrame->height);
 
 					//if(++i<=5)
 					for(y=0; y<imageFrame->height; y++)

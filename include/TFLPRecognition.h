@@ -64,7 +64,7 @@ typedef struct
 	int iMilliseconds;
 }TF_Time;
 
-typedef struct  
+typedef struct  TF_Result
 {
 	char number[20];            //识别结果
 	TF_Rect PlateRect;         //车牌位置
@@ -74,7 +74,13 @@ typedef struct
 	TF_LVehicleColor eVColor1; //车身主颜色
 	TF_LVehicleColor eVColor2; //车身次颜色
 	unsigned char *pResultBits; //视频识别模式中抓拍的图片,视频模式识别下有效，需要开辟
-	TF_Time sTime;             //视频识别模式中抓拍此张图的时间       
+	TF_Time sTime;             //视频识别模式中抓拍此张图的时间     
+	
+	//TF_Result& operator=(TF_Result &re){
+	//	memcpy(number, re.number);
+	//	return *this;
+	//}
+
 }TF_Result;
 
 

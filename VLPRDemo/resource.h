@@ -18,6 +18,11 @@
 #define BT_PAUSE                        1009
 #define BT_STOP                         1010
 #define ID_STATUS                       1011
+#define ID_GROUP_VIDEO                  1012
+#define ID_GROUP_PICTURE                1013
+#define ID_GROUP_LPR_PICTURE            1014
+#define ID_GROUP_LPR                    1015
+#define ID_GROUP_OPERATE                1016
 
 // Next default values for new objects
 // 
@@ -25,7 +30,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1012
+#define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
