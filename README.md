@@ -58,5 +58,12 @@ next:
 use new TFLPRecognition.dll
 
 
+[2014.2.13 19:03]
+1. 使用新版本的车牌识别 dll 
+next
+1.配置界面
+2.用sqlite 进入数据保存
+
+
 
 
