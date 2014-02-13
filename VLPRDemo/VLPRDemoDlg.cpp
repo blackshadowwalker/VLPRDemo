@@ -317,8 +317,9 @@ void PlayThread(void *pParam)
 				debug("PlayThread imagesQueuePlay.front  0x%x", pix);
 				dlg->imagesQueuePlay.pop();
 				dlg->PlayVideo(pix);
-				debug("PlayThread imagesQueuePlay pre release  0x%x", pix);
-			//	delete pix;
+			//
+			//	debug("PlayThread imagesQueuePlay pre release  0x%x", pix);\
+				delete pix;
 			}
 		//	SetEvent(hAccessImage);
 			
@@ -348,46 +349,46 @@ void ProcessResultThread(void *pParam)
 			continue;
 		}
 
-		TF_Result result = dlg->LPRQueueResult.front();
+		TF_Result *result = dlg->LPRQueueResult.front();
 
-		debug("ProcessResultThread Frame=%d  Plate=%s  (%d,%d)-(%d,%d)", nFrames, result.number, \
-			result.PlateRect.iLeft, result.PlateRect.iTop,
-			result.PlateRect.iRight, result.PlateRect.iBottom);
+		debug("ProcessResultThread Frame=%d  Plate=%s  (%d,%d)-(%d,%d)", nFrames, result->number, \
+			result->PlateRect.iLeft, result->PlateRect.iTop,
+			result->PlateRect.iRight, result->PlateRect.iBottom);
 
 	//	dlg->m_list.SetItemState(0, 0, LVIS_SELECTED|LVIS_FOCUSED); //取消选中
 
-		dlg->GetDlgItem(ID_LPR)->SetWindowText(result.number);
+		dlg->GetDlgItem(ID_LPR)->SetWindowText(result->number);
 
 		int count = dlg->m_list.GetItemCount();
 		int nRow = dlg->m_list.InsertItem(0, "");//车牌图片
-		dlg->m_list.SetItemText(nRow, 1, result.number);//车牌
-		sprintf(temp, "%g", result.fConfidence);
+		dlg->m_list.SetItemText(nRow, 1, result->number);//车牌
+		sprintf(temp, "%g", result->fConfidence);
 		dlg->m_list.SetItemText(nRow, 2, temp);//置信度
-		sprintf(temp, "%3dms", result.takesTime);
+		sprintf(temp, "%3dms", result->takesTime);
 		dlg->m_list.SetItemText(nRow, 3, temp);//耗时
-		sprintf(temp, "%s", LPlateType[result.ePlateType]);
+		sprintf(temp, "%s", LPlateType[result->ePlateType]);
 		dlg->m_list.SetItemText(nRow, 4, temp);//车牌类型
-		sprintf(temp, "%s", LVehicleColor[result.eVColor1]);
+		sprintf(temp, "%s", LVehicleColor[result->eVColor1]);
 		dlg->m_list.SetItemText(nRow, 5, temp);//车身主颜色
-		sprintf(temp, "%s", LVehicleColor[result.eVColor2]);
+		sprintf(temp, "%s", LVehicleColor[result->eVColor2]);
 		dlg->m_list.SetItemText(nRow, 6, temp);//车身次颜色
-		sprintf(temp, "%s", Directory[result.iMoveDir+1]);
+		sprintf(temp, "%s", Directory[result->iMoveDir+1]);
 		dlg->m_list.SetItemText(nRow, 7, temp);//运动方向
-		TF_Time *t = &result.sTime;
+		TF_Time *t = &result->sTime;
 		sprintf(temp, "%d-%d-%d %d:%d:%d", t->iYear, t->iMonth, t->iDay, t->iHour, t->iMilliseconds, t->iSecond);
 		dlg->m_list.SetItemText(nRow, 8, temp);//时间
 
 		dlg->m_list.SetItemState(0, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED); //选中
 
-		dlg->ShowPicture(result.pResultBits);
+		dlg->ShowPicture(result->pResultBits);
 
 		//get Plate
-		int w = result.PlateRect.iRight - result.PlateRect.iLeft;
-		int h = result.PlateRect.iBottom - result.PlateRect.iTop;
+		int w = result->PlateRect.iRight - result->PlateRect.iLeft;
+		int h = result->PlateRect.iBottom - result->PlateRect.iTop;
 		int linestep = WIDTHSTEP(w);
 		unsigned char *pBit = 0;
 
-		pBit = result.pResultBits;//图片
+		pBit = result->pResultBits;//图片
 
 		//	unsigned char *plate = new unsigned char[w*h*3];
 		if(dlg->LPRQueueResult.size()>0)
@@ -397,20 +398,23 @@ void ProcessResultThread(void *pParam)
 			memset(plate, 0 , w*h*3);
 			for(int i=0; i<h; i++){
 				memcpy( (plate + i * linestep ),
-					(pBit + result.PlateRect.iLeft*3 + (result.PlateRect.iTop+i) * WIDTHSTEP(dlg->imageWidth)),
+					(pBit + result->PlateRect.iLeft*3 + (result->PlateRect.iTop+i) * WIDTHSTEP(dlg->imageWidth)),
 					linestep );
 			}
 			dlg->ShowPlatePicture(plate, w, h );
 
-			sprintf(filename, "%s/%04d-%s-plate.bmp", dlg->m_imageDir, nFrames, result.number);
+			sprintf(filename, "%s/%04d-%s-plate.bmp", dlg->m_imageDir, nFrames, result->number);
 			VideoUtil::write24BitBmpFile(filename, w, h,(unsigned char*)plate, true, linestep);//车牌图片
 			//	delete plate;
 
-			sprintf(filename, "%s/%04d-%s.bmp", dlg->m_imageDir, nFrames, result.number);
+			sprintf(filename, "%s/%04d-%s.bmp", dlg->m_imageDir, nFrames, result->number);
 			VideoUtil::write24BitBmpFile(filename,dlg->imageWidth, dlg->imageHeight,(unsigned char*)pBit,  WIDTHSTEP(dlg->imageWidth));//抓拍特写图
 
 			delete pBit;
 		}
+		debug("ProcessResultThread LPRQueueResult.front 0x%x", result);
+		delete result;
+		
 	}
 	debug("ProcessResultThread 正常退出");
 	SetEvent(handleCanExit);//设置可以退出了
@@ -451,8 +455,8 @@ void RecognitionThread(void *pParam)
 		if(dlg->imagesQueue.size()>0)
 		{
 			imageSize = dlg->imageWidth * dlg->imageHeight *3;
-	//		debug("RecognitionThread wating  hAccessImage");\
-			WaitForSingleObject(hAccessImage, INFINITE);//一直等待可以访问
+			debug("RecognitionThread wating  hAccessImage");\
+		//	WaitForSingleObject(hAccessImage, INFINITE);//一直等待可以访问
 			debug("RecognitionThread getted  & imagesQueue.size=%d ", dlg->imagesQueue.size());
 			if(dlg->imagesQueue.size()<1){
 				SetEvent(hAccessImage);
@@ -461,37 +465,40 @@ void RecognitionThread(void *pParam)
 			p = dlg->imagesQueue.front();
 			dlg->imagesQueue.pop();
 
-			debug("RecognitionThread imagesQueue.front 0x%x", p);
+			debug("RecognitionThread imagesQueue.front ed 0x%x   queue size=%d ", p, dlg->imagesQueue.size());
 			memcpy(dlg->imageDataForShow, p, imageSize);
 			dlg->imagesQueuePlay.push(dlg->imageDataForShow);//For Play
 			SetEvent(hShowVideoFrame);// start play
-			//	debug("get front image queue size=%d  @ 0x%x", dlg->imagesQueue.size(), p );
 			t1 = clock();
-			TFLPR_RecImage( p, dlg->imageWidth, dlg->imageHeight, dlg->pTF_Result, &recROI, dlg->pLPRInstance);//车牌识别
+			if(dlg->recognitionMode==PICTURE)
+				TFLPR_RecImage( p, dlg->imageWidth, dlg->imageHeight, dlg->pTF_Result, 0, dlg->pLPRInstance);//车牌识别
+			else
+				TFLPR_RecImage( p, dlg->imageWidth, dlg->imageHeight, dlg->pTF_Result, &recROI, dlg->pLPRInstance);//车牌识别
 			t2 = clock();
-	//		SetEvent(hAccessImage);
-	//		debug("RecognitionThread Release  hAccessImage");
+		//	SetEvent(hAccessImage);
 			dlg->pTF_Result->takesTime = t2-t1;
 			debug("RecognitionThread imagesQueue pre release 0x%x", p);
 			
-
 			//处理识别结果
 			if(dlg->pTF_Result->fConfidence> 0){
-				TF_Result r;
-				r = *dlg->pTF_Result;
-			//	if(dlg->pTF_RecParma->iRecMode!=0)
+				TF_Result *r = new (TF_Result);
+				*r =  *dlg->pTF_Result;
+				r->pResultBits = new unsigned char[imageSize];
+				if(dlg->pTF_RecParma->iRecMode!=0) //处理视频
 				{
-					r.pResultBits = new unsigned char[imageSize];
-					if(r.pResultBits!=NULL &&  dlg->pTF_Result->pResultBits!=NULL)
-						memcpy(r.pResultBits , dlg->pTF_Result->pResultBits,imageSize );
-					if(dlg->recognitionMode==PICTURE)
-						memcpy(r.pResultBits , p, imageSize );
+					if(r->pResultBits!=NULL &&  dlg->pTF_Result->pResultBits!=NULL)
+						memcpy(r->pResultBits , dlg->pTF_Result->pResultBits,imageSize );
+
+				}else{ 
+					if(dlg->recognitionMode==PICTURE) // 处理图片
+						memcpy(r->pResultBits , p, imageSize );
 				}
 				dlg->GetDlgItem(ID_LPR)->SetWindowText("");
 				dlg->LPRQueueResult.push(r);
-				debug("RecognitionThread LPRQueueResult.push  0x%x", dlg->pTF_Result);
+				debug("RecognitionThread LPRQueueResult.push  0x%x", r);
 				
 			}else{
+				debug("-------------------------- 未识别 ------------------------------ " );
 				if(dlg->recognitionMode==PICTURE){
 					dlg->GetDlgItem(ID_LPR)->SetWindowText("未识别");
 				//	memset(plate, 0, MAX_SIZE_OF_PLATE); \
@@ -541,7 +548,7 @@ void VideoThread(void* pParam)
 				size = dlg->imageWidth * dlg->imageHeight * 3;
 				if(size<1)
 					continue;
-
+				dlg->recognitionMode = VIDEO;
 				if(dlg->imagesQueue.size() < 30 ){
 					pixBits = new unsigned char[size];\
 					memcpy(pixBits,  dlg->m_videoplay->imageFrame->imageData, size);
@@ -611,6 +618,7 @@ void CVLPRDemoDlg::OnBnClickedOpenVideo()
 	if(pTF_Result == NULL){
 		pTF_Result = new TF_Result();
 	}
+	pTF_RecParma->iRecMode=2;
 
 	char cBuff[256]={0};
 
@@ -974,7 +982,9 @@ void CVLPRDemoDlg::LPRFromImage(Bitmap* image)
 	}
 	if(pTF_Result == NULL){
 		pTF_Result = new TF_Result();
-	}	
+	}
+
+	pTF_RecParma->iRecMode=0;
 
 	long BufferLen;
 	imageWidth = image->GetWidth();
@@ -985,6 +995,8 @@ void CVLPRDemoDlg::LPRFromImage(Bitmap* image)
 		delete imageDataForShow;
 	imageDataForShow = new unsigned char[BufferLen];
 
+    unsigned char *buffer = new unsigned char[BufferLen];
+
 	BitmapData bitmapData={0};
 	bitmapData.Stride = WIDTHSTEP(imageWidth);
 	bitmapData.Scan0 = new BYTE[bitmapData.Stride * imageHeight];
@@ -994,12 +1006,13 @@ void CVLPRDemoDlg::LPRFromImage(Bitmap* image)
 	Rect rect(0,0, imageWidth, imageHeight);
 	image->LockBits(&rect, ImageLockModeRead | ImageLockModeUserInputBuf, PixelFormat24bppRGB, &bitmapData); 
 	
-	memcpy(pImageBuffer, (BYTE*)bitmapData.Scan0, BufferLen); 
+	memcpy(buffer, (BYTE*)bitmapData.Scan0, BufferLen); 
 	
 	delete bitmapData.Scan0;
 	image->UnlockBits( &bitmapData);
 
-	imagesQueue.push(pImageBuffer);//放入队列进行处理
+	debug("LPRFromImage imagesQueue.size = %d", imagesQueue.size());
+	imagesQueue.push(buffer);//放入队列进行处理
 	
 }
 
@@ -1031,6 +1044,10 @@ void CVLPRDemoDlg::OnBnClickedNextPicture()
 
 	if(filename!=0)
 		delete filename;
+
+	GetDlgItem(BT_NEXT_PICTURE)->EnableWindow(false);
+	Sleep(500);
+	GetDlgItem(BT_NEXT_PICTURE)->EnableWindow(true);
 }
 
 void CVLPRDemoDlg::OnEnChangeImageDir()

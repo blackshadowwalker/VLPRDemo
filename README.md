@@ -52,6 +52,11 @@ R6
 [2014.2.13 14:03]
 图片识别的增加一下张按钮功能	
 
+[2014.2.13 16:50]
+stable
+next:
+use new TFLPRecognition.dll
+
 
 
 

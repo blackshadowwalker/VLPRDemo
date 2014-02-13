@@ -63,7 +63,7 @@ public:
 	TF_Result		*pTF_Result;
 	unsigned char   *pImageBuffer;
 	void			*pLPRInstance;
-	queue<TF_Result> LPRQueueResult;
+	queue<TF_Result*> LPRQueueResult;
 	queue<unsigned char*> imagesQueue;
 	queue<unsigned char*> imagesQueuePlay;
 	unsigned char*  imageDataForShow;
