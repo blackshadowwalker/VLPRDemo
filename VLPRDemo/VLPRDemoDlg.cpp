@@ -24,6 +24,11 @@ HANDLE hShowVideoFrame=0;
 
 #define MESSAGE_RESULT  0x5001
 
+#define MAX_WIDTH_OF_PLATE  400
+#define MAX_HEIGHT_OF_PLATE  400
+#define MAX_SIZE_OF_PLATE	(MAX_WIDTH_OF_PLATE * MAX_HEIGHT_OF_PLATE * 3)
+unsigned char *plate = new unsigned char[MAX_SIZE_OF_PLATE];
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -69,6 +74,7 @@ END_MESSAGE_MAP()
 
 CVLPRDemoDlg::CVLPRDemoDlg(CWnd* pParent /*=NULL*/)
 : CDialog(CVLPRDemoDlg::IDD, pParent)
+, m_imageDir(_T("E:/temp/images"))
 {
 	//memset(this, 0, sizeof(CVLPRDemoDlg));
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -98,6 +104,7 @@ void CVLPRDemoDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST, m_list);
 	DDX_Control(pDX, ID_LPR, m_plate);
+	DDX_Text(pDX, ID_IMAGE_DIR, m_imageDir);
 }
 
 BEGIN_MESSAGE_MAP(CVLPRDemoDlg, CDialog)
@@ -114,6 +121,10 @@ BEGIN_MESSAGE_MAP(CVLPRDemoDlg, CDialog)
 	ON_WM_CLOSE()
 	ON_WM_SIZE()
 	ON_BN_CLICKED(ID_GROUP_OPERATE, &CVLPRDemoDlg::OnBnClickedGroupOperate)
+	ON_BN_CLICKED(BT_NEXT_PICTURE, &CVLPRDemoDlg::OnBnClickedNextPicture)
+	ON_EN_CHANGE(ID_IMAGE_DIR, &CVLPRDemoDlg::OnEnChangeImageDir)
+	ON_EN_KILLFOCUS(ID_IMAGE_DIR, &CVLPRDemoDlg::OnEnKillfocusImageDir)
+	ON_BN_CLICKED(BT_BROWSER, &CVLPRDemoDlg::OnBnClickedBrowser)
 END_MESSAGE_MAP()
 
 
@@ -182,7 +193,7 @@ BOOL CVLPRDemoDlg::OnInitDialog()
 	mGroupLPR			= (CButton*)GetDlgItem(ID_GROUP_LPR);
 	mGroupOperate		= (CButton*)GetDlgItem(ID_GROUP_OPERATE);
 
-	InitMyWindows();
+//	InitMyWindows();
 	ReStartThread();
 
 	bWindowInited = true;
@@ -221,13 +232,9 @@ void CVLPRDemoDlg::InitMyWindows(){
 	InitOpearteWindows(BT_STOP, dtx, dty, true);
 
 	InitOpearteWindows(BT_OPEN_PICTURE, dtx, dty);
-
 	//GetDlgItem(BT_PAUSE)->SetParent((CButton*)mGroupOperate);
 	//GetDlgItem(BT_PAUSE)->SetParent((CButton*)mGroupOperate);
-
 }
-
-
 
 void CVLPRDemoDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
@@ -325,8 +332,6 @@ void PlayThread(void *pParam)
 
 }
 
-unsigned char *plate = new unsigned char[400*200*3];
-
 //处理识别结果线程
 void ProcessResultThread(void *pParam)
 {
@@ -349,7 +354,10 @@ void ProcessResultThread(void *pParam)
 			result.PlateRect.iLeft, result.PlateRect.iTop,
 			result.PlateRect.iRight, result.PlateRect.iBottom);
 
-		dlg->m_list.SetItemState(0, 0, LVIS_SELECTED|LVIS_FOCUSED); //取消选中
+	//	dlg->m_list.SetItemState(0, 0, LVIS_SELECTED|LVIS_FOCUSED); //取消选中
+
+		dlg->GetDlgItem(ID_LPR)->SetWindowText(result.number);
+
 		int count = dlg->m_list.GetItemCount();
 		int nRow = dlg->m_list.InsertItem(0, "");//车牌图片
 		dlg->m_list.SetItemText(nRow, 1, result.number);//车牌
@@ -394,11 +402,11 @@ void ProcessResultThread(void *pParam)
 			}
 			dlg->ShowPlatePicture(plate, w, h );
 
-			sprintf(filename, "E:/temp/images/%04d-%s-plate.bmp", nFrames, result.number);
-			VideoUtil::write24BitBmpFile(filename, w, h,(unsigned char*)plate, linestep);//车牌图片
+			sprintf(filename, "%s/%04d-%s-plate.bmp", dlg->m_imageDir, nFrames, result.number);
+			VideoUtil::write24BitBmpFile(filename, w, h,(unsigned char*)plate, true, linestep);//车牌图片
 			//	delete plate;
 
-			sprintf(filename, "E:/temp/images/%04d-%s.bmp", nFrames, result.number);
+			sprintf(filename, "%s/%04d-%s.bmp", dlg->m_imageDir, nFrames, result.number);
 			VideoUtil::write24BitBmpFile(filename,dlg->imageWidth, dlg->imageHeight,(unsigned char*)pBit,  WIDTHSTEP(dlg->imageWidth));//抓拍特写图
 
 			delete pBit;
@@ -451,11 +459,12 @@ void RecognitionThread(void *pParam)
 				continue;
 			}
 			p = dlg->imagesQueue.front();
+			dlg->imagesQueue.pop();
+
 			debug("RecognitionThread imagesQueue.front 0x%x", p);
 			memcpy(dlg->imageDataForShow, p, imageSize);
-			dlg->imagesQueuePlay.push(dlg->imageDataForShow);
-			SetEvent(hShowVideoFrame);
-			dlg->imagesQueue.pop();
+			dlg->imagesQueuePlay.push(dlg->imageDataForShow);//For Play
+			SetEvent(hShowVideoFrame);// start play
 			//	debug("get front image queue size=%d  @ 0x%x", dlg->imagesQueue.size(), p );
 			t1 = clock();
 			TFLPR_RecImage( p, dlg->imageWidth, dlg->imageHeight, dlg->pTF_Result, &recROI, dlg->pLPRInstance);//车牌识别
@@ -464,20 +473,33 @@ void RecognitionThread(void *pParam)
 	//		debug("RecognitionThread Release  hAccessImage");
 			dlg->pTF_Result->takesTime = t2-t1;
 			debug("RecognitionThread imagesQueue pre release 0x%x", p);
-			delete p;
+			
 
 			//处理识别结果
 			if(dlg->pTF_Result->fConfidence> 0){
 				TF_Result r;
 				r = *dlg->pTF_Result;
-				if(dlg->pTF_RecParma->iRecMode!=0){
+			//	if(dlg->pTF_RecParma->iRecMode!=0)
+				{
 					r.pResultBits = new unsigned char[imageSize];
 					if(r.pResultBits!=NULL &&  dlg->pTF_Result->pResultBits!=NULL)
 						memcpy(r.pResultBits , dlg->pTF_Result->pResultBits,imageSize );
+					if(dlg->recognitionMode==PICTURE)
+						memcpy(r.pResultBits , p, imageSize );
 				}
+				dlg->GetDlgItem(ID_LPR)->SetWindowText("");
 				dlg->LPRQueueResult.push(r);
 				debug("RecognitionThread LPRQueueResult.push  0x%x", dlg->pTF_Result);
+				
+			}else{
+				if(dlg->recognitionMode==PICTURE){
+					dlg->GetDlgItem(ID_LPR)->SetWindowText("未识别");
+				//	memset(plate, 0, MAX_SIZE_OF_PLATE); \
+					dlg->ShowPlatePicture(plate, MAX_WIDTH_OF_PLATE, MAX_HEIGHT_OF_PLATE);
+				}
 			}
+
+			delete p;
 		}
 	}
 	dlg->GetDlgItem(ID_STATUS)->SetWindowText("分析完成");
@@ -574,6 +596,7 @@ void CVLPRDemoDlg::OnBnClickedOpenVideo()
 		return ;
 
 	int ret =0;
+	recognitionMode = VIDEO;
 
 	mVideoPath = fileOpenDlg.GetPathName();
 	if(pTF_RecParma==NULL){
@@ -886,17 +909,48 @@ void CVLPRDemoDlg::OnBnClickedGroupOperate()
 	// TODO: 在此添加控件通知处理程序代码
 }
 
+void CVLPRDemoDlg::listFiles(CString firstFile)
+{
+	int index = firstFile.ReverseFind('\\');
+	if(index<1)
+		index = firstFile.ReverseFind('/');
+	if(index<1)
+		return;
+
+	while(mListPicturesPath.size() > 0 )
+	{
+		char *p = mListPicturesPath.front();
+		mListPicturesPath.pop_front();
+		delete p;
+	}
+
+	CString path = firstFile.Left(index);
+	FileUtil::ListFiles(path.GetBuffer(path.GetLength()), mListPicturesPath, "*.jpg", true);
+	FileUtil::ListFiles(path.GetBuffer(path.GetLength()), mListPicturesPath, "*.bmp", true);
+	FileUtil::ListFiles(path.GetBuffer(path.GetLength()), mListPicturesPath, "*.png", true);
+
+	if(mListPicturesPath.size() > 0)
+		GetDlgItem(BT_NEXT_PICTURE)->EnableWindow(true);
+	else
+		GetDlgItem(BT_NEXT_PICTURE)->EnableWindow(false);
+}
+
 
 void CVLPRDemoDlg::OnBnClickedOpenPicture()
 {
 	//打开图片并分析
 	//FileUtil::SelectFolder(this->m_hWnd, "选择图片");
 	CFileDialog fileOpenDlg(TRUE, _T("*.bmp"), "",OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST|OFN_HIDEREADONLY,
-		"image files (*.jpg;*.bmp) |*.jpg;*.bmp;|All Files (*.*)|*.*||",NULL);
+		"image files (*.jpg;*.bmp;*.png) |*.jpg;*.bmp;*.png|All Files (*.*)|*.*||",NULL);
 	if (fileOpenDlg.DoModal()!=IDOK) return ;
 
 	mPicturePath = fileOpenDlg.GetPathName();
 	char p[256] = {0};
+
+	recognitionMode = PICTURE;
+
+	listFiles(mPicturePath);
+
 
 	Bitmap* image = KLoadBitmap(mPicturePath.GetBuffer(mPicturePath.GetLength()));
 	DrawImg2Hdc(image, ID_VIDEO_WALL, this);
@@ -947,16 +1001,53 @@ void CVLPRDemoDlg::LPRFromImage(Bitmap* image)
 
 	imagesQueue.push(pImageBuffer);//放入队列进行处理
 	
-	/*
-	long t1 = clock();
-	TFLPR_RecImage( pImageBuffer, imageWidth, imageHeight, pTF_Result, 0, pLPRInstance);
-	long t2 = clock();
-	pTF_Result->takesTime = t2-t1;
-
-	//处理识别结果
-	if(pTF_Result->fConfidence> 0){
-		LPRQueueResult.push(*pTF_Result);
-	}
-	*/
 }
 
+
+void CVLPRDemoDlg::OnBnClickedNextPicture()
+{
+	// 处理下一张图片
+	if(mListPicturesPath.size()<1){
+		GetDlgItem(BT_NEXT_PICTURE)->EnableWindow(false);
+		MessageBox("已到达最后一张","", MB_OK);
+		return ;
+	}
+
+	if(mListPicturesPath.size()<1)
+		return;
+
+	char *filename =0;
+	filename= mListPicturesPath.front();
+	mListPicturesPath.pop_front();
+	if( mPicturePath.Find(filename) != -1 ){
+		filename = mListPicturesPath.front();
+		mListPicturesPath.pop_front();
+	}
+	
+	Bitmap* image = KLoadBitmap(filename);
+	DrawImg2Hdc(image, ID_VIDEO_WALL, this);
+//	DrawImg2Hdc(image, ID_PICTURE, this);
+	LPRFromImage(image);
+
+	if(filename!=0)
+		delete filename;
+}
+
+void CVLPRDemoDlg::OnEnChangeImageDir()
+{
+	
+}
+
+void CVLPRDemoDlg::OnEnKillfocusImageDir()
+{
+	this->UpdateData(true);
+	FileUtil::CreateFolders(m_imageDir.GetBuffer(m_imageDir.GetLength()));
+}
+
+void CVLPRDemoDlg::OnBnClickedBrowser()
+{
+	char *path = FileUtil::SelectFolder(this->m_hWnd, "选择输出文件夹");
+	if(path!=0)
+		m_imageDir.Format("%s",path);
+	UpdateData(false);
+}

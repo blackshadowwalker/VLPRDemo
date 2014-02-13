@@ -96,10 +96,11 @@ int VideoUtil::write24BitBmpFile(char *filename, unsigned int width, unsigned in
   
     for (row = 0; row <  height; row++) {  
        
-		if(widthstep==width)
+		if(widthstep > width)
 			 imagePtr = image + (height - 1 - row) * WIDTHSTEP(width) ;  
 		else
 			 imagePtr = image + (height - 1 - row) * width * 3;  
+
         paddedImagePtr = paddedImage + row * (width * 3 + extrabytes);  
 	//	debug("row: %d  column ", row);
         for (column = 0; column < width; column++) {  

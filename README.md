@@ -36,7 +36,7 @@ R6
 
 [2014.2.13 12:00]
 1. 增加了打开图片并进行车牌识别,正常运行
-2. 修改
+2. 修改视频流车牌识别，现在速度很快，修改部分如下
 	* VideoThread 与 RecognitionThread
 	* VideoThread 与 PlayThread
 	* RecognitionThread 与 ProcessResultThread
@@ -48,7 +48,9 @@ R6
 
 下一步：
 1. 图片识别的增加一下张按钮功能	
-	
+
+[2014.2.13 14:03]
+图片识别的增加一下张按钮功能	
 
 
 

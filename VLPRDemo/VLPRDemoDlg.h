@@ -13,6 +13,7 @@
 #include <list>
 using namespace std;
 
+enum RecognitionMode{ VIDEO,  PICTURE};
 
 // CVLPRDemoDlg 对话框
 class CVLPRDemoDlg : public CDialog
@@ -26,7 +27,8 @@ public:
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
-
+	
+	
 
 // 实现
 protected:
@@ -43,11 +45,15 @@ public:
 	afx_msg void OnBnClickedOpenVideo();
 	void LPRFromImage(Bitmap* image);
 
+	RecognitionMode recognitionMode;
+
 	list<HANDLE> EventList;
 	HANDLE ReginsterMyThread(char *);
 
 	CString mVideoPath;
 	CString mPicturePath;
+	list<char *> mListPicturesPath;
+	void listFiles(CString firstFile);
 
 	int imageWidth;
 	int imageHeight;
@@ -95,4 +101,9 @@ public:
 
 	int CloseThread();
 	void ReStartThread();
+	afx_msg void OnBnClickedNextPicture();
+	CString m_imageDir;
+	afx_msg void OnEnChangeImageDir();
+	afx_msg void OnEnKillfocusImageDir();
+	afx_msg void OnBnClickedBrowser();
 };

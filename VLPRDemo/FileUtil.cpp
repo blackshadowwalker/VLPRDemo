@@ -82,56 +82,69 @@ bool FileUtil::CreateFolders(const char* folderPath)
 		//if(!isOk） 
 		//	return false;
 	}
+	isOk = (BOOL)CreateDirectory( temp, 0 );
 	
 	return true;
 }
 
 /**
 * 列出目录下的所有文件
-* @Path : 目录
-* @retList: 返回的文件列表
-* @
-* 
+* @czPath : 文件目录
+* @listResult: 返回的文件列表
+* @fileExt: 文件扩展名称，如 *.jpg
+* @fullPathName: 返回的文件名称是否填写全路径，否则只填写名称
+* @bListDirectory: 文件夹名称是否加入文件列表
+* @bListSub: 是否列出子文件夹中的文件
+*
+* @Return : &listResult
 */
-/*
-list<const char*> FileUtil::ListFiles(char *czPath, list<char*> listResult, bool bListDirectory, bool bListSub)
+list<char*>* FileUtil::ListFiles(char *czPath, list<char*> &listResult, char *fileExt, bool fullPathName, bool bListDirectory, bool bListSub)
 {
 	char file[MAX_PATH];
 	lstrcpy(file,czPath);
-	lstrcat(file,"\\*.*"); 
+	lstrcat(file,"\\");
+	lstrcat(file,fileExt);
 
 	WIN32_FIND_DATA wfd; 
 	HANDLE Find = FindFirstFile(file,&wfd); 
 	if (Find == INVALID_HANDLE_VALUE)  
 		return NULL;
 
-	char szFindPath[MAX_PATH]={0};
+	
 	while (FindNextFile(Find, &wfd))
 	{
 		if (wfd.cFileName[0] == '.') 
 		{
 			continue;
 		} 
+		char *szFindPath = new char[MAX_PATH];
 		lstrcpy(szFindPath,czPath); 
 		lstrcat(szFindPath,"\\"); 
 		lstrcat(szFindPath,wfd.cFileName); 
 
 		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) 
 		{
-			if(bListDirectory)
-				listResult.push_back( wfd.cFileName );
 			if(bListSub)
-				ListFiles(szFindPath, listResult, bListDirectory, bListSub);  
+				ListFiles(szFindPath, listResult,fileExt, bListDirectory, bListSub);  
+
+			if(fullPathName != true)
+				sprintf(szFindPath, wfd.cFileName, MAX_PATH);
+			if(bListDirectory)
+				listResult.push_back( szFindPath );
 		}
-		else
-			listResult.push_back( wfd.cFileName );
+		else{
+			if(fullPathName != true)
+				sprintf(szFindPath, wfd.cFileName, MAX_PATH);
+			listResult.push_back( szFindPath );
+
+		}
 	}
 	FindClose(Find);
 
-	return listResult;
+	return &listResult;
 
 }
-*/
+
 
 
 
@@ -141,7 +154,7 @@ list<const char*> FileUtil::ListFiles(char *czPath, list<char*> listResult, bool
 #endif
 char* FileUtil::SelectFolder(HWND hwnd, char* title)
 {
-	char szFolder[MAX_PATH] = {0};		//得到文件路径			
+	char *szFolder = new char[MAX_PATH]; //得到文件路径	
 
 	//HWND hwnd = hWnd->GetSafeHwnd();   //得到窗口句柄
 #ifdef _SHGetMalloc_  
@@ -188,11 +201,11 @@ char* FileUtil::SelectFolder(HWND hwnd, char* title)
 	}  
 	else 
 	{  
-		MessageBox(NULL,TEXT("EMPTY"),TEXT("Choose"),MB_OK);  
+		delete szFolder;
+	  //	MessageBox(NULL,TEXT("EMPTY"),TEXT("Choose"),MB_OK);  
 	}  
 	CoTaskMemFree(pidl);  
-	delete path;  
-	return 0;  
+	delete path;   
 #endif  
 
 	return szFolder;
