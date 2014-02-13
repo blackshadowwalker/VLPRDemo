@@ -26,6 +26,13 @@
 
 #include <afxdisp.h>        // MFC 自动化类
 
+//gdi ++
+typedef unsigned long ULONG_PTR, *PULONG_PTR;
+#include <Gdiplus.h>
+using namespace Gdiplus;
+#pragma comment (lib, "GdiPlus.lib")
+static ULONG_PTR m_pGdiToken;
+static struct GdiplusStartupInput m_gdiplusStartupInput;
 
 
 #ifndef _AFX_NO_OLE_SUPPORT

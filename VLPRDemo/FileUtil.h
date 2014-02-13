@@ -17,6 +17,9 @@ public:
 	//static list<string>	ListFiles(const char *czPath, list<string> listResult, bool bListDirectory, bool bListSub);
 	static char* SelectFolder(HWND hwnd, char* title="Select Folder");
 	static BOOL FindFirstFileExists(LPCTSTR lpPath, DWORD dwFilter);
+
+	bool CreateFolders(const char* folderPath);
+	bool RemoveDir(const char* szFileDir);
 private:
 	
 

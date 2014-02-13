@@ -286,8 +286,8 @@ FFmpegVideo::~FFmpegVideo()
 	//	av_freep(&pFormatCtx->streams[i]->codec);                       
 	//	av_freep(&pFormatCtx->streams[i]);                           
 	//}
-	if(pFormatCtx)
-		av_close_input_file(pFormatCtx);
+	if(pFormatCtx)\
+		av_close_input_file(pFormatCtx); 
 
 	if(imageFrame)
 		delete imageFrame;
@@ -323,10 +323,10 @@ void FFmpegVideo::release()
 int FFmpegVideo::getOneFrame()
 {
 	bool  bHaveReadVideoFrame = false;
+	int ret=0;
 
 	if(nFps == 0)
 		nFps = pFormatCtx->streams[0]->time_base.den;
-
 
 	{
 		//TIMEBEGIN(t_pr, "decode") //测试时间
@@ -336,10 +336,16 @@ int FFmpegVideo::getOneFrame()
 		{
 			iIfRead = av_read_frame(pFormatCtx, &packet);
 			iNowFrameNum ++;
+			if(iNowFrameNum ==iTotalFrameNum)
+			{
+				ret = -2;
+			}
 
 			this->fRate = iNowFrameNum/(float)iTotalFrameNum;
-			if(iIfRead < 0)
-				return -1;
+			if(iIfRead < 0){
+				ret = -1;
+				break;
+			}
 			//if(frameFinished)//判断视频祯是否读完
 			//	return -1;
 
@@ -365,36 +371,22 @@ int FFmpegVideo::getOneFrame()
 					//Get RGB24 pixs
 			//		sws_scale(ctx, pFrameOri->data, pFrameOri->linesize,\
 						0, pCodecCtx->height,pFrameRGB->data,\
-						pFrameRGB->linesize);
+						pFrameRGB->linesize);\
 					imageFrame->widthStep = pFrameRGB->linesize[0];
 
-					//    sws_scale(ctx, pFrame->data, pFrame->linesize,
-					//     0, pCodecCtx->height,pict.data, pict.linesize);
-
 					// Save the frame to disk
-			//		memcpy(imageFrame->imageData, pFrameBGR->data[0], pFrameBGR->linesize[0]*imageFrame->height);
-
-					//if(++i<=5)
-					for(y=0; y<imageFrame->height; y++)
-					{
-						//fwrite(pFrame->data[0]+y*pFrame->linesize[0], 1, width*3, pFile);
-				//		memcpy(pFrame->imageData + pFrameBuffer->widthStep*y, pFrameBGR->data[0]+y*pFrameBGR->linesize[0], sizeof(unsigned char)*width*3);
-
-					}
+					memset(imageFrame->imageData, 0,  pFrameBGR->linesize[0]*imageFrame->height);
+					memcpy(imageFrame->imageData, pFrameBGR->data[0], pFrameBGR->linesize[0]*imageFrame->height);
 				}
-				//else
-				//	return -1;
 			}
 		}
-
-	
 
 		// Free the packet that was allocated by av_read_frame
 		av_free_packet(&packet);
 		//TIMEEND(t_pr, "decode") //测试时间
 	}
 
-	return 0;
+	return ret;
 }
 
 

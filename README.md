@@ -34,5 +34,22 @@ R6
 下一步:
 增加配置界面
 
+[2014.2.13 12:00]
+1. 增加了打开图片并进行车牌识别,正常运行
+2. 修改
+	* VideoThread 与 RecognitionThread
+	* VideoThread 与 PlayThread
+	* RecognitionThread 与 ProcessResultThread
+	的线程访问冲突，现在修改成了
+	* VideoThread 和 RecognitionThread 访问队列 imagesQueue,VideoThread一直new imageData内存空间，然后放入队列 imagesQueue,
+	  RecognitionThread 从队列 imagesQueue 获取数据并delete
+	* RecognitionThread将显示的图片（每次memcpy到全局的内存空间imageDataForShow）放入队列 imagesQueuePlay,
+	  然后接着处理车牌，PlayThread一直读取队列imagesQueuePlay
+
+下一步：
+1. 图片识别的增加一下张按钮功能	
+	
+
+
 
 

@@ -67,9 +67,6 @@ typedef struct
 	int iMilliseconds;
 }TF_Time;
 
-
-
-
 typedef struct  TF_Result
 {
 	char number[20];            //识别结果
@@ -82,11 +79,10 @@ typedef struct  TF_Result
 	unsigned char *pResultBits; //视频识别模式中抓拍的图片,视频模式识别下有效，需要开辟
 	TF_Time sTime;             //视频识别模式中抓拍此张图的时间     
 	long	takesTime; //耗时
-	//TF_Result& operator=(TF_Result &re){
-	//	memcpy(number, re.number);
-	//	return *this;
-	//}
 
+    TF_Result(){
+		memset(this, 0, sizeof(TF_Result));
+	}
 }TF_Result;
 
 

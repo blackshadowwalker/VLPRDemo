@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "VideoUtil.h"
+#include "FileUtil.h"
 
 VideoUtil::VideoUtil(void)
 {
@@ -9,9 +10,9 @@ VideoUtil::~VideoUtil(void)
 {
 }
 
+#define WIDTHSTEP(pixels_width)  (((pixels_width) *3 +3) / 4 *4)
 
-
-int VideoUtil::write24BitBmpFile(char *filename, unsigned int width, unsigned int height, unsigned char *image,bool isBGR )  
+int VideoUtil::write24BitBmpFile(char *filename, unsigned int width, unsigned int height, unsigned char *image,bool isBGR,int widthstep)  
 {  
     BITMAPINFOHEADER bmpInfoHeader;  
     BITMAPFILEHEADER bmpFileHeader;  
@@ -94,8 +95,13 @@ int VideoUtil::write24BitBmpFile(char *filename, unsigned int width, unsigned in
         quirk of the .bmp file format. */  
   
     for (row = 0; row <  height; row++) {  
-        imagePtr = image + (height - 1 - row) * width * 3;  
+       
+		if(widthstep==width)
+			 imagePtr = image + (height - 1 - row) * WIDTHSTEP(width) ;  
+		else
+			 imagePtr = image + (height - 1 - row) * width * 3;  
         paddedImagePtr = paddedImage + row * (width * 3 + extrabytes);  
+	//	debug("row: %d  column ", row);
         for (column = 0; column < width; column++) {  
 			if(isBGR == true)
 			{

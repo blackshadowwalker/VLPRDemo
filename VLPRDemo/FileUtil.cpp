@@ -4,10 +4,11 @@
 #include <ShlObj.h> 
 #include <stdio.h>
 #include <time.h>   
- 
+#include <string>
 
 #include "FileUtil.h"
 
+using namespace std;
 
 FileUtil::FileUtil(void)
 {
@@ -15,6 +16,74 @@ FileUtil::FileUtil(void)
 
 FileUtil::~FileUtil(void)
 {
+}
+//删除目录和文件
+bool FileUtil::RemoveDir(const char* szFileDir)
+{
+	
+	if(szFileDir==NULL  || !FindFirstFileExists(szFileDir, FILE_ATTRIBUTE_DIRECTORY) )
+		return false;
+	char *strDir =new char[256];
+	char fileName[256] ={0}, temp[256]={0};
+	memset(strDir,0, 256);
+	memcpy(strDir, szFileDir, strlen(szFileDir));
+	sprintf(temp, "%s\\*.*",strDir);
+	WIN32_FIND_DATA wfd;
+	HANDLE hFind = FindFirstFile((temp),&wfd);
+	if (hFind == INVALID_HANDLE_VALUE)
+		return false;
+	do
+	{
+		sprintf(fileName, "%s\\%s", strDir, wfd.cFileName);
+		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		{
+			if (stricmp(wfd.cFileName,".") != 0 &&
+				stricmp(wfd.cFileName,"..") != 0)
+				RemoveDir(fileName);
+		}
+		else
+		{
+			DeleteFile(fileName);
+		}
+	}
+	while (FindNextFile(hFind,&wfd));
+		FindClose(hFind);
+	RemoveDirectory(szFileDir);
+	delete strDir;
+	
+	return true;
+	
+} 
+
+//创建多级目录
+bool FileUtil::CreateFolders(const char* folderPath)
+{
+	char  folder[256]={0};
+	char  temp[256]={0};
+	char *p=0;
+	memcpy(folder, folderPath, 256);
+
+	int len = strlen(folder);
+	while( (p = strchr(folder, '\\'))!=NULL){
+		*p='/';
+	}
+	if( folder[len-1]=='/')
+		folder[len-1] = '\0';
+
+	int index=2;
+	BOOL isOk = true;
+	
+	p = folder;
+	while((p = strchr(p, '/'))!=NULL)
+	{
+		memcpy(temp, folder, p-folder);
+		p ++;
+		isOk = (BOOL)CreateDirectory( temp, 0 );
+		//if(!isOk） 
+		//	return false;
+	}
+	
+	return true;
 }
 
 /**
@@ -133,7 +202,7 @@ char* FileUtil::SelectFolder(HWND hwnd, char* title)
 //判断文件/文件夹是否存在
 //判断文件：	FindFirstFileExists(lpPath, FALSE);  
 //判断文件夹：	FindFirstFileExists(lpPath, FILE_ATTRIBUTE_DIRECTORY);  
-BOOL FindFirstFileExists(LPCTSTR lpPath, DWORD dwFilter)  
+BOOL FileUtil::FindFirstFileExists(LPCTSTR lpPath, DWORD dwFilter)  
 {  
 	WIN32_FIND_DATA fd;  
 	HANDLE hFind = FindFirstFile(lpPath, &fd);  

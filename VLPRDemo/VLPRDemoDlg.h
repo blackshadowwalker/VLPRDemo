@@ -41,19 +41,26 @@ protected:
 public:
 	afx_msg void OnBnClickedOpenPicture();
 	afx_msg void OnBnClickedOpenVideo();
+	void LPRFromImage(Bitmap* image);
 
 	list<HANDLE> EventList;
-	HANDLE ReginsterMyThread();
+	HANDLE ReginsterMyThread(char *);
 
 	CString mVideoPath;
 	CString mPicturePath;
 
+	int imageWidth;
+	int imageHeight;
+
 	FFmpegVideo		*m_videoplay;
 	TF_RecParma		*pTF_RecParma;
 	TF_Result		*pTF_Result;
+	unsigned char   *pImageBuffer;
 	void			*pLPRInstance;
 	queue<TF_Result> LPRQueueResult;
 	queue<unsigned char*> imagesQueue;
+	queue<unsigned char*> imagesQueuePlay;
+	unsigned char*  imageDataForShow;
 		
 	afx_msg void OnBnClickedPause();
 	afx_msg void OnBnClickedStop();
@@ -85,4 +92,7 @@ public:
 	CListCtrl m_list;
 	afx_msg void OnBnClickedGroupOperate();
 	CStatic m_plate;
+
+	int CloseThread();
+	void ReStartThread();
 };
