@@ -25,4 +25,5 @@ public:
 	int m_imageMaxWidth;
 	int m_imageMinWidth;
 	CString m_imageDir;
+	afx_msg void OnBnClickedButton2();
 };

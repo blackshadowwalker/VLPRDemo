@@ -8,10 +8,11 @@
 
 // CLoadingDlg 对话框
 
-IMPLEMENT_DYNCREATE(CLoadingDlg, CDHtmlDialog)
+IMPLEMENT_DYNAMIC(CLoadingDlg, CDialog)
 
 CLoadingDlg::CLoadingDlg(CWnd* pParent /*=NULL*/)
-	: CDHtmlDialog(CLoadingDlg::IDD, CLoadingDlg::IDH, pParent)
+	: CDialog(CLoadingDlg::IDD, pParent)
+	, m_TextShow(_T(""))
 {
 
 }
@@ -22,35 +23,13 @@ CLoadingDlg::~CLoadingDlg()
 
 void CLoadingDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDHtmlDialog::DoDataExchange(pDX);
+	CDialog::DoDataExchange(pDX);
+	DDX_Text(pDX, ID_TEXT_SHOW, m_TextShow);
 }
 
-BOOL CLoadingDlg::OnInitDialog()
-{
-	CDHtmlDialog::OnInitDialog();
-	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
-}
 
-BEGIN_MESSAGE_MAP(CLoadingDlg, CDHtmlDialog)
+BEGIN_MESSAGE_MAP(CLoadingDlg, CDialog)
 END_MESSAGE_MAP()
-
-BEGIN_DHTML_EVENT_MAP(CLoadingDlg)
-	DHTML_EVENT_ONCLICK(_T("ButtonOK"), OnButtonOK)
-	DHTML_EVENT_ONCLICK(_T("ButtonCancel"), OnButtonCancel)
-END_DHTML_EVENT_MAP()
-
 
 
 // CLoadingDlg 消息处理程序
-
-HRESULT CLoadingDlg::OnButtonOK(IHTMLElement* /*pElement*/)
-{
-	OnOK();
-	return S_OK;
-}
-
-HRESULT CLoadingDlg::OnButtonCancel(IHTMLElement* /*pElement*/)
-{
-	OnCancel();
-	return S_OK;
-}

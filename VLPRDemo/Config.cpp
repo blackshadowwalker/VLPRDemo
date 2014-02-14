@@ -35,6 +35,7 @@ void CConfig::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CConfig, CDialog)
 	ON_BN_CLICKED(IDOK, &CConfig::OnBnClickedOk)
 	ON_BN_CLICKED(BT_BROWSER_FOLDER, &CConfig::OnBnClickedBrowserFolder)
+	ON_BN_CLICKED(IDC_BUTTON2, &CConfig::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -42,13 +43,33 @@ END_MESSAGE_MAP()
 
 void CConfig::OnBnClickedOk()
 {
+	UpdateData(true);
+	if(m_imageMaxWidth>400 || m_imageMaxWidth<90){
+		MessageBox("车牌最大宽度范围是(90 - 400)");
+		return ;
+	}
+	if(m_imageMinWidth > 120 || m_imageMinWidth < 60){
+		MessageBox("车牌最小宽度范围是(60 - 120)");
+		return ;
+	}
+
 	OnOK();
 }
 #include "FileUtil.h"
 void CConfig::OnBnClickedBrowserFolder()
 {
+	UpdateData(true);
 	char *path = FileUtil::SelectFolder(this->m_hWnd, "选择输出文件夹");
 	if(path!=0)
 		m_imageDir.Format("%s",path);
+	UpdateData(false);
+}
+
+void CConfig::OnBnClickedButton2()
+{
+	//恢复默认配置
+	m_imageMaxWidth = 400;
+	m_imageMinWidth = 60;
+	m_imageDir = CVLPRDemoApp::m_appPath + "/images";
 	UpdateData(false);
 }

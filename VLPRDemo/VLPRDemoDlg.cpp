@@ -888,17 +888,18 @@ void CVLPRDemoDlg::ReStartThread()
 #include "LoadingDlg.h"
 void LoadingThread(void* pParam)
 {
-	MessageBox(0, "正在退出...", "", 0);
+	CLoadingDlg dlg;
+	dlg.m_TextShow = "正在退出......";
+	dlg.DoModal();
+//	MessageBox(0, "正在退出...", "", 0);
 }
-
-
 
 void CVLPRDemoDlg::OnClose()
 {
+	_beginthread(LoadingThread, 0, this);
+
 	OnBnClickedStop();
 	Sleep(1000);
-	
-	_beginthread(LoadingThread, 0, this);
 
 	GetDlgItem(ID_STATUS)->SetWindowText("正在退出......");
 	if( CloseThread()>0)
@@ -1094,6 +1095,10 @@ void CVLPRDemoDlg::OnBnClickedSetConfig()
 		plateMinWidth = configDlg.m_imageMinWidth;
 		m_imageDir = configDlg.m_imageDir;
 		FileUtil::CreateFolders(m_imageDir.GetBuffer(m_imageDir.GetLength()));
+
+	 	pTF_RecParma->iMaxPlateWidth = plateMaxWidth;
+		pTF_RecParma->iMinPlateWidth = plateMinWidth;
+
 		SaveConfig();
 	}
 }
