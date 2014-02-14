@@ -5,6 +5,12 @@
 #include "VLPRDemo.h"
 #include "Config.h"
 
+#include "FileUtil.h"
+
+
+#define MAX_THEME_LEN  2
+char *themeName[MAX_THEME_LEN]={"", "skin/AquaOS.ssk"};
+
 
 // CConfig 对话框
 
@@ -29,6 +35,7 @@ void CConfig::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, EDIT_IMAGE_MAX_WIDTH, m_imageMaxWidth);
 	DDX_Text(pDX, EDIT_IMAGE_MAX_HEIGHT, m_imageMinWidth);
 	DDX_Text(pDX, EDIT_DIR, m_imageDir);
+	DDX_Control(pDX, IDC_COMBO1, m_combox);
 }
 
 
@@ -36,6 +43,7 @@ BEGIN_MESSAGE_MAP(CConfig, CDialog)
 	ON_BN_CLICKED(IDOK, &CConfig::OnBnClickedOk)
 	ON_BN_CLICKED(BT_BROWSER_FOLDER, &CConfig::OnBnClickedBrowserFolder)
 	ON_BN_CLICKED(IDC_BUTTON2, &CConfig::OnBnClickedButton2)
+	ON_CBN_SELCHANGE(IDC_COMBO1, &CConfig::OnCbnSelchangeCombo1)
 END_MESSAGE_MAP()
 
 
@@ -55,7 +63,7 @@ void CConfig::OnBnClickedOk()
 
 	OnOK();
 }
-#include "FileUtil.h"
+
 void CConfig::OnBnClickedBrowserFolder()
 {
 	UpdateData(true);
@@ -72,4 +80,34 @@ void CConfig::OnBnClickedButton2()
 	m_imageMinWidth = 60;
 	m_imageDir = CVLPRDemoApp::m_appPath + "/images";
 	UpdateData(false);
+}
+
+#include "VLPRDemoDlg.h"
+void CConfig::OnCbnSelchangeCombo1()
+{
+	UpdateData(true);
+	char	skinPath[256] = {0};
+	int index = m_combox.GetCurSel();
+	if(index<0 || index> (MAX_THEME_LEN-1))
+		return ;
+	sprintf(skinPath, "%s/%s",CVLPRDemoApp::m_appPath, themeName[index]); 
+	if(index==0)
+	{
+		skinppExitSkin();
+	}else{
+		skinppLoadSkin( themeName[index] );
+	}
+	Invalidate();
+}
+
+
+BOOL CConfig::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+
+	m_combox.AddString("默认主题");
+	m_combox.AddString("AquaOS");
+	m_combox.SetCurSel(0);
+
+	return TRUE;  
 }

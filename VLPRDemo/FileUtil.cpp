@@ -157,6 +157,7 @@ list<char*>* FileUtil::ListFiles(char *czPath, list<char*> &listResult, char *fi
 char* FileUtil::SelectFolder(HWND hwnd, char* title)
 {
 	char *szFolder = new char[MAX_PATH]; //得到文件路径	
+	memset(szFolder, 0, MAX_PATH);
 
 	//HWND hwnd = hWnd->GetSafeHwnd();   //得到窗口句柄
 #ifdef _SHGetMalloc_  
@@ -195,6 +196,7 @@ char* FileUtil::SelectFolder(HWND hwnd, char* title)
 	LPITEMIDLIST pidl=(LPITEMIDLIST)CoTaskMemAlloc(sizeof(LPITEMIDLIST));  
 	pidl = SHBrowseForFolder(&bi);  
 	TCHAR * path = new TCHAR[MAX_PATH];  
+	memset(path, 0, MAX_PATH);
 	if(pidl != NULL)  
 	{  
 		if(SHGetPathFromIDList(pidl,path))
@@ -204,6 +206,7 @@ char* FileUtil::SelectFolder(HWND hwnd, char* title)
 	else 
 	{  
 		delete szFolder;
+		szFolder = 0;
 	  //	MessageBox(NULL,TEXT("EMPTY"),TEXT("Choose"),MB_OK);  
 	}  
 	CoTaskMemFree(pidl);  

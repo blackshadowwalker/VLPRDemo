@@ -140,6 +140,8 @@ BOOL CVLPRDemoDlg::OnInitDialog()
 
 	CDialog::OnInitDialog();
 
+	//skinppLoadSkin( "skin/AquaOS.ssk");
+
 	// 将“关于...”菜单项添加到系统菜单中。
 
 	// IDM_ABOUTBOX 必须在系统命令范围内。
@@ -209,6 +211,7 @@ BOOL CVLPRDemoDlg::OnInitDialog()
 		plateMinWidth = 60;
 		m_imageDir = CVLPRDemoApp::m_appPath +"/image";
 	}
+	FileUtil::CreateFolders(m_imageDir.GetBuffer(m_imageDir.GetLength()));
 
 	if(pTF_RecParma==NULL){
 		pTF_RecParma = new TF_RecParma();
@@ -233,6 +236,8 @@ BOOL CVLPRDemoDlg::OnInitDialog()
 	}
 
 	bWindowInited = true;
+
+
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -1151,7 +1156,8 @@ void CVLPRDemoDlg::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 		temp = m_list.GetItemText(nItem, 10 );
 		Bitmap* imageScreen = KLoadBitmap(temp.GetBuffer(temp.GetLength()));
 		DrawImg2Hdc(imageScreen, ID_PICTURE, this);
-
 	}
 	*pResult = 0;
 }
+
+

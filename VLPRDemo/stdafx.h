@@ -23,6 +23,7 @@
 #include <afxwin.h>         // MFC 核心组件和标准组件
 #include <afxext.h>         // MFC 扩展
 
+#include "SkinPPWTL.h"
 
 #include <afxdisp.h>        // MFC 自动化类
 

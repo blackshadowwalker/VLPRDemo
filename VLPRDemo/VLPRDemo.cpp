@@ -10,6 +10,11 @@
 #define new DEBUG_NEW
 #endif
 
+#include "SkinPPWTL.h"
+#pragma comment(lib, "SkinPPWTL.lib")
+
+CVLPRDemoApp theApp;
+
 
 // CVLPRDemoApp
 
@@ -29,9 +34,7 @@ CVLPRDemoApp::CVLPRDemoApp()
 
 // 唯一的一个 CVLPRDemoApp 对象
 
-CVLPRDemoApp theApp;
-#include "SkinPPWTL.h"
-#pragma comment(lib, "SkinPPWTL.lib")
+
 
 // CVLPRDemoApp 初始化
 
@@ -40,6 +43,7 @@ CString CVLPRDemoApp::m_appPath="";
 BOOL CVLPRDemoApp::InitInstance()
 {
 	skinppLoadSkin(_T("skin/AquaOS.ssk"));
+//	skinppLoadSkin(_T(""));
 
 	CString g_szOcxPath = this->m_pszHelpFilePath;
 	CString g_szOcxName = this->m_pszExeName;

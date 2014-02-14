@@ -1,4 +1,5 @@
 #pragma once
+#include "afxwin.h"
 
 
 // CConfig ¶Ô»°¿ò
@@ -26,4 +27,7 @@ public:
 	int m_imageMinWidth;
 	CString m_imageDir;
 	afx_msg void OnBnClickedButton2();
+	CComboBox m_combox;
+	afx_msg void OnCbnSelchangeCombo1();
+	virtual BOOL OnInitDialog();
 };
