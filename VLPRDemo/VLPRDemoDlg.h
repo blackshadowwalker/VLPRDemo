@@ -12,6 +12,7 @@
 #include <iostream>
 #include <list>
 #include "Config.h"
+#include "LoadingDlg.h"
 using namespace std;
 
 enum RecognitionMode{ VIDEO,  PICTURE};
@@ -23,14 +24,15 @@ class CVLPRDemoDlg : public CDialog
 public:
 	CVLPRDemoDlg(CWnd* pParent = NULL);	// 标准构造函数
 
+	CLoadingDlg loading;
+
 // 对话框数据
 	enum { IDD = IDD_VLPRDEMO_DIALOG };
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 	
-	
-	
+
 // 实现
 protected:
 	HICON m_hIcon;

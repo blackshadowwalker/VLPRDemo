@@ -30,7 +30,8 @@ CVLPRDemoApp::CVLPRDemoApp()
 // 唯一的一个 CVLPRDemoApp 对象
 
 CVLPRDemoApp theApp;
-
+#include "SkinPPWTL.h"
+#pragma comment(lib, "SkinPPWTL.lib")
 
 // CVLPRDemoApp 初始化
 
@@ -38,7 +39,7 @@ CString CVLPRDemoApp::m_appPath="";
 
 BOOL CVLPRDemoApp::InitInstance()
 {
-//	skinppLoadSkin(_T("skin/AquaOS.ssk"));
+	skinppLoadSkin(_T("skin/AquaOS.ssk"));
 
 	CString g_szOcxPath = this->m_pszHelpFilePath;
 	CString g_szOcxName = this->m_pszExeName;
@@ -100,4 +101,11 @@ BOOL CVLPRDemoApp::InitInstance()
 	// 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
 	//  而不是启动应用程序的消息泵。
 	return FALSE;
+}
+
+int CVLPRDemoApp::ExitInstance()
+{
+	skinppExitSkin(); 
+
+	return CWinAppEx::ExitInstance();
 }

@@ -885,12 +885,11 @@ void CVLPRDemoDlg::ReStartThread()
 	
 }
 
-#include "LoadingDlg.h"
 void LoadingThread(void* pParam)
 {
-	CLoadingDlg dlg;
-	dlg.m_TextShow = "正在退出......";
-	dlg.DoModal();
+	CVLPRDemoDlg *dlg = (CVLPRDemoDlg*)pParam;
+	dlg->loading.m_TextShow = "正在退出......";
+	dlg->loading.DoModal();
 //	MessageBox(0, "正在退出...", "", 0);
 }
 
@@ -1084,6 +1083,7 @@ void CVLPRDemoDlg::OnBnClickedCheck1()
 void CVLPRDemoDlg::OnBnClickedSetConfig()
 {
 	//
+
 	if(ReadConfig())
 	{
 		configDlg.m_imageMaxWidth = plateMaxWidth;
@@ -1101,6 +1101,7 @@ void CVLPRDemoDlg::OnBnClickedSetConfig()
 
 		SaveConfig();
 	}
+
 }
 bool CVLPRDemoDlg::ReadConfig()
 {
@@ -1140,6 +1141,9 @@ void CVLPRDemoDlg::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
 	int nItem = m_list.GetNextSelectedItem(pos);
 	CString temp;
 	if(nItem>=0){
+		temp = m_list.GetItemText(nItem, 1 );
+		GetDlgItem(ID_LPR)->SetWindowText(temp);
+
 		temp = m_list.GetItemText(nItem, 9 );
 		Bitmap* imagePlate = KLoadBitmap(temp.GetBuffer(temp.GetLength()));
 		DrawImg2Hdc(imagePlate, ID_LPR_PICTURE, this);
