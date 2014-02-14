@@ -86,6 +86,7 @@ CVLPRDemoDlg::CVLPRDemoDlg(CWnd* pParent /*=NULL*/)
 	bPlay = false;
 	bStop = true;
 	bPause = false;
+	fastProcess = false;
 	pLPRInstance = NULL;
 	pImageBuffer = 0;
 
@@ -106,7 +107,6 @@ void CVLPRDemoDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST, m_list);
 	DDX_Control(pDX, ID_LPR, m_plate);
-	DDX_Text(pDX, ID_IMAGE_DIR, m_imageDir);
 }
 
 BEGIN_MESSAGE_MAP(CVLPRDemoDlg, CDialog)
@@ -125,8 +125,9 @@ BEGIN_MESSAGE_MAP(CVLPRDemoDlg, CDialog)
 	ON_BN_CLICKED(ID_GROUP_OPERATE, &CVLPRDemoDlg::OnBnClickedGroupOperate)
 	ON_BN_CLICKED(BT_NEXT_PICTURE, &CVLPRDemoDlg::OnBnClickedNextPicture)
 	ON_EN_CHANGE(ID_IMAGE_DIR, &CVLPRDemoDlg::OnEnChangeImageDir)
-	ON_EN_KILLFOCUS(ID_IMAGE_DIR, &CVLPRDemoDlg::OnEnKillfocusImageDir)
-	ON_BN_CLICKED(BT_BROWSER, &CVLPRDemoDlg::OnBnClickedBrowser)
+	ON_BN_CLICKED(IDC_CHECK1, &CVLPRDemoDlg::OnBnClickedCheck1)
+	ON_BN_CLICKED(BT_SET_CONFIG, &CVLPRDemoDlg::OnBnClickedSetConfig)
+	ON_NOTIFY(NM_CLICK, IDC_LIST, &CVLPRDemoDlg::OnNMClickList)
 END_MESSAGE_MAP()
 
 
@@ -182,6 +183,13 @@ BOOL CVLPRDemoDlg::OnInitDialog()
 	m_list.InsertColumn( 6, "车身次颜色", LVCFMT_LEFT, 80 );
 	m_list.InsertColumn( 7, "运动方向", LVCFMT_LEFT, 90 );
 	m_list.InsertColumn( 8, "时间", LVCFMT_LEFT, 120 );
+	m_list.InsertColumn( 9, "车牌", LVCFMT_LEFT, 120 );
+	m_list.InsertColumn( 10, "截图", LVCFMT_LEFT, 120 );
+
+	//int nRow = m_list.InsertItem(0, "");//
+	//m_list.SetItemText(nRow, 0, "000");//
+	//m_list.SetItemText(nRow, 9, "009");//
+	//m_list.SetItemText(nRow, 10, "100");//
 
 
 	videoWall = (CStatic*)GetDlgItem(ID_VIDEO_WALL);
@@ -194,6 +202,26 @@ BOOL CVLPRDemoDlg::OnInitDialog()
 	mGroupLPRPicture	= (CButton*)GetDlgItem(ID_GROUP_LPR_PICTURE);
 	mGroupLPR			= (CButton*)GetDlgItem(ID_GROUP_LPR);
 	mGroupOperate		= (CButton*)GetDlgItem(ID_GROUP_OPERATE);
+
+
+	if(!ReadConfig()){
+		plateMaxWidth = 400;
+		plateMinWidth = 60;
+		m_imageDir = CVLPRDemoApp::m_appPath +"/image";
+	}
+
+	if(pTF_RecParma==NULL){
+		pTF_RecParma = new TF_RecParma();
+		pTF_RecParma->iImageMode = 0;
+		pTF_RecParma->iRecMode=2;
+		pTF_RecParma->iMaxPlateWidth = plateMaxWidth;
+		pTF_RecParma->iMinPlateWidth = plateMinWidth;
+		pTF_RecParma->iResultNum=8;
+		sprintf(pTF_RecParma->pLocalChinese, "京");
+	}
+	if(pTF_Result == NULL){
+		pTF_Result = new TF_Result();
+	}
 
 //	InitMyWindows();
 	ReStartThread();
@@ -316,7 +344,6 @@ void PlayThread(void *pParam)
 			Sleep(10);		
 			continue;
 		}
-	//	debug("PlayThread waiting hShowVideoFrame");
 		if(WaitForSingleObject(hShowVideoFrame,0)==0)
 		{
 			debug("PlayThread imagesQueuePlay.size = %d", dlg->imagesQueuePlay.size());
@@ -325,7 +352,6 @@ void PlayThread(void *pParam)
 				debug("PlayThread imagesQueuePlay.front  0x%x", pix);
 				dlg->imagesQueuePlay.pop();
 				dlg->PlayVideo(pix);
-			//
 			//	debug("PlayThread imagesQueuePlay pre release  0x%x", pix);\
 				delete pix;
 			}
@@ -356,35 +382,32 @@ void ProcessResultThread(void *pParam)
 			Sleep(10);		
 			continue;
 		}
-
 		TF_Result *result = dlg->LPRQueueResult.front();
-
 		debug("ProcessResultThread Frame=%d  Plate=%s  (%d,%d)-(%d,%d)", nFrames, result->number, \
 			result->PlateRect.iLeft, result->PlateRect.iTop,
 			result->PlateRect.iRight, result->PlateRect.iBottom);
 
-	//	dlg->m_list.SetItemState(0, 0, LVIS_SELECTED|LVIS_FOCUSED); //取消选中
-
+		dlg->m_list.SetItemState(0, 0, LVIS_SELECTED|LVIS_FOCUSED); //取消选中
+		int column = 1;
 		dlg->GetDlgItem(ID_LPR)->SetWindowText(result->number);
-
 		int count = dlg->m_list.GetItemCount();
 		int nRow = dlg->m_list.InsertItem(0, "");//车牌图片
-		dlg->m_list.SetItemText(nRow, 1, result->number);//车牌
+		dlg->m_list.SetItemText(nRow, column++, result->number);//车牌
 		sprintf(temp, "%g", result->fConfidence);
-		dlg->m_list.SetItemText(nRow, 2, temp);//置信度
+		dlg->m_list.SetItemText(nRow, column++, temp);//置信度
 		sprintf(temp, "%3dms", result->takesTime);
-		dlg->m_list.SetItemText(nRow, 3, temp);//耗时
+		dlg->m_list.SetItemText(nRow, column++, temp);//耗时
 		sprintf(temp, "%s", LPlateType[result->ePlateType]);
-		dlg->m_list.SetItemText(nRow, 4, temp);//车牌类型
+		dlg->m_list.SetItemText(nRow, column++, temp);//车牌类型
 		sprintf(temp, "%s", LVehicleColor[result->eVColor1]);
-		dlg->m_list.SetItemText(nRow, 5, temp);//车身主颜色
+		dlg->m_list.SetItemText(nRow, column++, temp);//车身主颜色
 		sprintf(temp, "%s", LVehicleColor[result->eVColor2]);
-		dlg->m_list.SetItemText(nRow, 6, temp);//车身次颜色
+		dlg->m_list.SetItemText(nRow, column++, temp);//车身次颜色
 		sprintf(temp, "%s", Directory[result->iMoveDir+1]);
-		dlg->m_list.SetItemText(nRow, 7, temp);//运动方向
+		dlg->m_list.SetItemText(nRow, column++, temp);//运动方向
 		TF_Time *t = &result->sTime;
 		sprintf(temp, "%d-%d-%d %d:%d:%d", t->iYear, t->iMonth, t->iDay, t->iHour, t->iMilliseconds, t->iSecond);
-		dlg->m_list.SetItemText(nRow, 8, temp);//时间
+		dlg->m_list.SetItemText(nRow, column++, temp);//时间
 
 		dlg->m_list.SetItemState(0, LVIS_SELECTED|LVIS_FOCUSED, LVIS_SELECTED|LVIS_FOCUSED); //选中
 
@@ -398,7 +421,6 @@ void ProcessResultThread(void *pParam)
 
 		pBit = result->pResultBits;//图片
 
-		//	unsigned char *plate = new unsigned char[w*h*3];
 		if(dlg->LPRQueueResult.size()>0)
 			dlg->LPRQueueResult.pop();
 		if(pBit!=NULL)
@@ -411,12 +433,27 @@ void ProcessResultThread(void *pParam)
 			}
 			dlg->ShowPlatePicture(plate, w, h );
 
-			sprintf(filename, "%s/%04d-%s-plate.bmp", dlg->m_imageDir, nFrames, result->number);
+
+			if(t->iYear>2010)
+				sprintf(temp, "%d-%d-%d_%d.%d.%d", t->iYear, t->iMonth, t->iDay, t->iHour, t->iMilliseconds, t->iSecond);
+			else{
+				time_t timer;
+				timer = time(NULL);
+				struct tm *tblock;
+				tblock = localtime(&timer);
+				sprintf(temp,"%d-%d-%d_%d.%d.%d", tblock->tm_year+1900, tblock->tm_mon+1, tblock->tm_mday, tblock->tm_hour, tblock->tm_min, tblock->tm_sec );
+			}
+			sprintf(filename, "%s/%s_%s_plate.bmp", dlg->m_imageDir, temp, result->number);
+		debug(filename);
 			VideoUtil::write24BitBmpFile(filename, w, h,(unsigned char*)plate, true, linestep);//车牌图片
+			dlg->m_list.SetItemText(nRow, column++, filename);//车牌位置  column = 9
+			
 			//	delete plate;
 
-			sprintf(filename, "%s/%04d-%s.bmp", dlg->m_imageDir, nFrames, result->number);
+			sprintf(filename, "%s/%s_%s.bmp", dlg->m_imageDir, temp, result->number);
 			VideoUtil::write24BitBmpFile(filename,dlg->imageWidth, dlg->imageHeight,(unsigned char*)pBit,  WIDTHSTEP(dlg->imageWidth));//抓拍特写图
+			dlg->m_list.SetItemText(nRow, column++, filename);//特写图位置  column = 10
+	debug(filename);
 
 			delete pBit;
 		}
@@ -443,7 +480,8 @@ void RecognitionThread(void *pParam)
 	int ret=0;
 	int imageSize = 0;
 	clock_t t1,t2;
-	unsigned char *p  =0;
+	unsigned char *p  =0 , *p2=0;
+	char temp[256]={0};
 	while(WaitForSingleObject(handleExit,0)!=WAIT_OBJECT_0){
 
 		if(dlg->imagesQueue.size()<1){
@@ -468,7 +506,7 @@ void RecognitionThread(void *pParam)
 		//	WaitForSingleObject(hAccessImage, INFINITE);//一直等待可以访问
 			debug("RecognitionThread getted  & imagesQueue.size=%d ", dlg->imagesQueue.size());
 			if(dlg->imagesQueue.size()<1){
-				SetEvent(hAccessImage);
+		//		SetEvent(hAccessImage);
 				continue;
 			}
 			p = dlg->imagesQueue.front();
@@ -492,6 +530,11 @@ void RecognitionThread(void *pParam)
 		//	SetEvent(hAccessImage);
 			dlg->pTF_Result->takesTime = t2-t1;
 			debug("RecognitionThread imagesQueue pre release 0x%x", p);
+
+			dlg->timeNow = clock();
+			sprintf(temp, "Rate:%d fps", nFrames*1000/(dlg->timeNow - dlg->timeStart));
+			debug("RecognitionThread %s",temp );
+			dlg->GetDlgItem(ID_STATUS)->SetWindowText(temp);
 			
 			//处理识别结果
 			if(ret>0 && dlg->pTF_Result->fConfidence> 0){
@@ -510,13 +553,16 @@ void RecognitionThread(void *pParam)
 				dlg->GetDlgItem(ID_LPR)->SetWindowText("");
 				dlg->LPRQueueResult.push(r);
 				debug("RecognitionThread LPRQueueResult.push  0x%x", r);
-				
+
 			}else{
 				debug("-------------------------- 未识别 ERROR[%d]: %s ------------------------------ " , ret, TF_ERROR[ret+3]);
 				if(dlg->recognitionMode==PICTURE){
 					dlg->GetDlgItem(ID_LPR)->SetWindowText("未识别");
-				//	memset(plate, 0, MAX_SIZE_OF_PLATE); \
-					dlg->ShowPlatePicture(plate, MAX_WIDTH_OF_PLATE, MAX_HEIGHT_OF_PLATE);
+					if(!dlg->fastProcess && dlg->imagesQueue.size()>0){//
+						p2 = dlg->imagesQueue.front();
+						dlg->imagesQueue.pop();
+						delete p2;
+					}
 				}
 			}
 			delete p;
@@ -540,7 +586,6 @@ void VideoThread(void* pParam)
 	debug("VideoThread 启动  handle=0x%x", handleCanExit);
 	long size = dlg->imageWidth * dlg->imageHeight * 3;
 	unsigned char* pixBits  = 0;
-	unsigned char* pixBitsShow  = 0;
 	int ret=0;
 	while(WaitForSingleObject(handleExit,0)!=WAIT_OBJECT_0){
 		while(dlg->bPause && WaitForSingleObject(handleExit,0)!=WAIT_OBJECT_0){
@@ -548,13 +593,14 @@ void VideoThread(void* pParam)
 		}
 		if(WaitForSingleObject(handleExit,0)==WAIT_OBJECT_0)
 			break;
-
-		//debug("VideoThread wating  handleVideoThread");
 		if(WaitForSingleObject(handleVideoThread,0)==WAIT_OBJECT_0)
 		{
-			//	debug("VideoThread getted  handleVideoThread");
-			if(dlg->imagesQueue.size() < 30 ){
+			if(dlg->fastProcess) //开启快速模式，缺点会丢帧
 				ret = dlg->m_videoplay->getOneFrame();
+			if(dlg->imagesQueue.size() < 10 )
+			{
+				if(!dlg->fastProcess)
+					ret = dlg->m_videoplay->getOneFrame();
 				if(ret==0)
 				{
 					dlg->imageWidth = dlg->m_videoplay->imageFrame->width;
@@ -565,15 +611,14 @@ void VideoThread(void* pParam)
 					dlg->recognitionMode = VIDEO;
 					pixBits = new unsigned char[size];\
 						memcpy(pixBits,  dlg->m_videoplay->imageFrame->imageData, size);
-					//	debug("VideoThread wating  hAccessImage");\
-					WaitForSingleObject(hAccessImage, -1);//一直等待可以访问
 					dlg->imagesQueue.push(pixBits);\
-						debug("VideoThread imagesQueue.push 0x%x   Qsize=%d", pixBits, dlg->imagesQueue.size());
+						debug("VideoThread imagesQueue.push 0x%x   Qsize=%d  nFrame=%d ", pixBits, dlg->imagesQueue.size(), dlg->m_videoplay->iNowFrameNum);
 					//	SetEvent(hAccessImage);
 					if(dlg->bStop==false)
 						SetEvent(handleVideoThread);
 				}else{
 					if(ret==-2){
+						ResetEvent(handleVideoThread);
 						debug("视频读取完成");
 						MessageBox(0, "视频读取完成","", MB_OK);
 					}
@@ -582,13 +627,13 @@ void VideoThread(void* pParam)
 						SetEvent(handleVideoThread);
 					}
 				}
-			}else{
+			}else{//if(dlg->imagesQueue.size() < 30 )
 				if(dlg->bStop==false)
 					SetEvent(handleVideoThread);
-					Sleep( dlg->imagesQueue.size()<<3 );
 			}				
+		}else{ // if(WaitForSingleObject(handleVideoThread,0)==WAIT_OBJECT_0)
+			Sleep( dlg->imagesQueue.size()<<3 );
 		}
-
 	}
 end:
 	ResetEvent(handleVideoThread);
@@ -611,21 +656,11 @@ void CVLPRDemoDlg::OnBnClickedOpenVideo()
 
 	int ret =0;
 	recognitionMode = VIDEO;
+	nFrames = 0;
 
 	mVideoPath = fileOpenDlg.GetPathName();
-	if(pTF_RecParma==NULL){
-		pTF_RecParma = new TF_RecParma();
-		pTF_RecParma->iImageMode = 0;
-		pTF_RecParma->iRecMode=2;
-		pTF_RecParma->iMaxPlateWidth = 400;
-		pTF_RecParma->iMinPlateWidth = 60;
-		pTF_RecParma->iResultNum=8;
-		sprintf(pTF_RecParma->pLocalChinese, "京");
-	}
-	if(pTF_Result == NULL){
-		pTF_Result = new TF_Result();
-	}
-	pTF_RecParma->iRecMode=2;
+	
+	pTF_RecParma->iRecMode=2;//视频识别模式
 
 	char cBuff[256]={0};
 
@@ -664,13 +699,8 @@ void CVLPRDemoDlg::OnBnClickedOpenVideo()
 				TFLPR_Uninit(pLPRInstance);
 			pLPRInstance = TFLPR_Init(*pTF_RecParma);
 		}else{
-			if(ret==-2){
-				debug("视频读取完成");
-				MessageBox("视频读取完成","",MB_OK);
-			}else{
-				debug("视频读取失败");
-				MessageBox("视频读取失败","错误",MB_OK);
-			}
+			debug("视频读取失败[%d]", ret);
+			MessageBox("视频读取失败","错误",MB_OK);
 			return ;
 		}
 	}
@@ -682,6 +712,7 @@ void CVLPRDemoDlg::OnBnClickedOpenVideo()
 	GetDlgItem(BT_PAUSE)->EnableWindow(true);
 	GetDlgItem(BT_STOP)->EnableWindow(true);
 //	ReStartThread();
+	timeStart = clock();
 	SetEvent(handleVideoThread);
 	SetEvent(hAccessImage);
 	//_beginthread(VideoThread, 0 ,this);//获取视频帧
@@ -785,6 +816,7 @@ void CVLPRDemoDlg::OnBnClickedPause()
 	if(bPause){
 		bPause = false;
 		GetDlgItem(BT_PAUSE)->SetWindowText("暂停");
+		timeStart = clock();
 	}else{
 		bPause = true;
 		GetDlgItem(BT_PAUSE)->SetWindowText("恢复");
@@ -798,8 +830,6 @@ void CVLPRDemoDlg::OnBnClickedStop()
 	GetDlgItem(BT_PAUSE)->EnableWindow(false);
 	GetDlgItem(BT_STOP)->EnableWindow(false);
 	ResetEvent(handleVideoThread);
-
-
 }
 
 int CVLPRDemoDlg::CloseThread()
@@ -855,10 +885,21 @@ void CVLPRDemoDlg::ReStartThread()
 	
 }
 
+#include "LoadingDlg.h"
+void LoadingThread(void* pParam)
+{
+	MessageBox(0, "正在退出...", "", 0);
+}
+
+
+
 void CVLPRDemoDlg::OnClose()
 {
 	OnBnClickedStop();
 	Sleep(1000);
+	
+	_beginthread(LoadingThread, 0, this);
+
 	GetDlgItem(ID_STATUS)->SetWindowText("正在退出......");
 	if( CloseThread()>0)
 		debug("非正常退出 @ CDialog::OnClose()  线程未全部关闭");
@@ -943,20 +984,7 @@ void CVLPRDemoDlg::OnBnClickedOpenPicture()
 	mPicturePath = fileOpenDlg.GetPathName();
 	char p[256] = {0};
 
-	if(pTF_RecParma==NULL){
-		pTF_RecParma = new TF_RecParma();
-		memset(pTF_RecParma, 0, sizeof(TF_RecParma));
-		pTF_RecParma->iImageMode = 0;
-		pTF_RecParma->iRecMode=0;//
-		pTF_RecParma->iMaxPlateWidth = 400;
-		pTF_RecParma->iMinPlateWidth = 60;
-		pTF_RecParma->iResultNum=8;
-		sprintf(pTF_RecParma->pLocalChinese, "京");
-	}
-	if(pTF_Result == NULL){
-		pTF_Result = new TF_Result();
-	}
-	pTF_RecParma->iRecMode=0;//
+	pTF_RecParma->iRecMode=0;//图片识别模式
 	if(pLPRInstance)
 		TFLPR_Uninit(pLPRInstance);
 
@@ -1045,16 +1073,76 @@ void CVLPRDemoDlg::OnEnChangeImageDir()
 	
 }
 
-void CVLPRDemoDlg::OnEnKillfocusImageDir()
+void CVLPRDemoDlg::OnBnClickedCheck1()
 {
-	this->UpdateData(true);
-	FileUtil::CreateFolders(m_imageDir.GetBuffer(m_imageDir.GetLength()));
+	//开启快速模式
+	UpdateData(true);
+	fastProcess = ((CButton*)GetDlgItem(IDC_CHECK1))->GetCheck();
 }
 
-void CVLPRDemoDlg::OnBnClickedBrowser()
+void CVLPRDemoDlg::OnBnClickedSetConfig()
 {
-	char *path = FileUtil::SelectFolder(this->m_hWnd, "选择输出文件夹");
-	if(path!=0)
-		m_imageDir.Format("%s",path);
-	UpdateData(false);
+	//
+	if(ReadConfig())
+	{
+		configDlg.m_imageMaxWidth = plateMaxWidth;
+		configDlg.m_imageMinWidth = plateMinWidth;
+		configDlg.m_imageDir = m_imageDir;
+	}
+	if(configDlg.DoModal()==IDOK){
+		plateMaxWidth = configDlg.m_imageMaxWidth;
+		plateMinWidth = configDlg.m_imageMinWidth;
+		m_imageDir = configDlg.m_imageDir;
+		FileUtil::CreateFolders(m_imageDir.GetBuffer(m_imageDir.GetLength()));
+		SaveConfig();
+	}
+}
+bool CVLPRDemoDlg::ReadConfig()
+{
+	char lpFileName[512]={0};
+	char retString[512]={0};
+	char temp[256]={0};
+	sprintf(lpFileName,"%s\\VLPRConfig.ini",CVLPRDemoApp::m_appPath);
+	bool ret = 0;
+	ret = GetPrivateProfileString("config","imagedir", "", temp, 256, lpFileName);	
+	m_imageDir.Format("%s", temp);
+	plateMaxWidth = GetPrivateProfileInt("config","plateMaxWidth", 0, lpFileName);	
+	plateMinWidth = GetPrivateProfileInt("config","plateMinWidth", 0, lpFileName);	
+
+	ret = ret & (plateMaxWidth>0) & (plateMinWidth>0);
+	return ret;
+
+}
+bool CVLPRDemoDlg::SaveConfig()
+{
+	char lpFileName[512]={0};
+	char retString[512]={0};
+	char temp[256]={0};
+	sprintf(lpFileName,"%s\\VLPRConfig.ini",CVLPRDemoApp::m_appPath);
+	bool ret=0;
+	ret =WritePrivateProfileString("config","imagedir", m_imageDir, lpFileName);	
+	sprintf(temp, "%d", plateMaxWidth);
+	ret =WritePrivateProfileString("config","plateMaxWidth", temp, lpFileName);	
+	sprintf(temp, "%d", plateMinWidth);
+	ret = WritePrivateProfileString("config","plateMinWidth", temp, lpFileName);	
+
+	return ret;
+}
+void CVLPRDemoDlg::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	POSITION pos = m_list.GetFirstSelectedItemPosition();
+	int nItem = m_list.GetNextSelectedItem(pos);
+	CString temp;
+	if(nItem>=0){
+		temp = m_list.GetItemText(nItem, 9 );
+		Bitmap* imagePlate = KLoadBitmap(temp.GetBuffer(temp.GetLength()));
+		DrawImg2Hdc(imagePlate, ID_LPR_PICTURE, this);
+
+		temp = m_list.GetItemText(nItem, 10 );
+		Bitmap* imageScreen = KLoadBitmap(temp.GetBuffer(temp.GetLength()));
+		DrawImg2Hdc(imageScreen, ID_PICTURE, this);
+
+	}
+	*pResult = 0;
 }

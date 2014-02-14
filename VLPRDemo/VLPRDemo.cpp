@@ -34,8 +34,21 @@ CVLPRDemoApp theApp;
 
 // CVLPRDemoApp 初始化
 
+CString CVLPRDemoApp::m_appPath="";
+
 BOOL CVLPRDemoApp::InitInstance()
 {
+//	skinppLoadSkin(_T("skin/AquaOS.ssk"));
+
+	CString g_szOcxPath = this->m_pszHelpFilePath;
+	CString g_szOcxName = this->m_pszExeName;
+
+	g_szOcxName += ".HLP";
+	int nTmp = g_szOcxName.GetLength();
+	nTmp = g_szOcxPath.GetLength() - nTmp;
+	g_szOcxPath = g_szOcxPath.Left(nTmp-1);
+
+	m_appPath = g_szOcxPath;
 
 
 	//初始化GDI+.

@@ -192,6 +192,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Config.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FFmpegVideo.cpp"
 				>
 			</File>
@@ -214,6 +218,10 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\LoadingDlg.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\public.cpp"
@@ -258,11 +266,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\Config.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FFmpegVideo.h"
 				>
 			</File>
 			<File
 				RelativePath=".\FileUtil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LoadingDlg.h"
 				>
 			</File>
 			<File
@@ -324,6 +340,16 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\ConfigDlg.htm"
+			DeploymentContent="true"
+			>
+		</File>
+		<File
+			RelativePath=".\LoadingDlg.htm"
+			DeploymentContent="true"
+			>
+		</File>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>

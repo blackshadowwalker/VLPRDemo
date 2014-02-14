@@ -11,6 +11,7 @@
 #include <queue>
 #include <iostream>
 #include <list>
+#include "Config.h"
 using namespace std;
 
 enum RecognitionMode{ VIDEO,  PICTURE};
@@ -29,7 +30,7 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 	
 	
-
+	
 // 实现
 protected:
 	HICON m_hIcon;
@@ -54,9 +55,18 @@ public:
 	CString mPicturePath;
 	list<char *> mListPicturesPath;
 	void listFiles(CString firstFile);
-
+	
+	bool ReadConfig();
+	bool SaveConfig();
+	CConfig configDlg;//
+	CString m_imageDir;
+	int plateMaxWidth;
+	int plateMinWidth;
 	int imageWidth;
 	int imageHeight;
+	bool fastProcess;//是否进行快速处理，//开启快速模式，缺点会丢帧
+	clock_t timeStart, timeNow;
+
 
 	FFmpegVideo		*m_videoplay;
 	TF_RecParma		*pTF_RecParma;
@@ -102,8 +112,11 @@ public:
 	int CloseThread();
 	void ReStartThread();
 	afx_msg void OnBnClickedNextPicture();
-	CString m_imageDir;
+	
 	afx_msg void OnEnChangeImageDir();
 	afx_msg void OnEnKillfocusImageDir();
-	afx_msg void OnBnClickedBrowser();
+	afx_msg void OnBnClickedCheck1();
+	afx_msg void OnBnClickedSetConfig();
+
+	afx_msg void OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult);
 };

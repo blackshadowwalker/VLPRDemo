@@ -58,17 +58,19 @@ bool FileUtil::RemoveDir(const char* szFileDir)
 //创建多级目录
 bool FileUtil::CreateFolders(const char* folderPath)
 {
-	char  folder[256]={0};
-	char  temp[256]={0};
+	char  folder[MAX_PATH]={0};
+	char  temp[MAX_PATH]={0};
 	char *p=0;
-	memcpy(folder, folderPath, 256);
+	memcpy(folder, folderPath, strlen(folderPath));
 
 	int len = strlen(folder);
 	while( (p = strchr(folder, '\\'))!=NULL){
 		*p='/';
 	}
-	if( folder[len-1]=='/')
-		folder[len-1] = '\0';
+	if( folder[len-1]!='/')
+		folder[len] = '/';
+	len = strlen(folder);
+	folder[len] = '\0';
 
 	int index=2;
 	BOOL isOk = true;

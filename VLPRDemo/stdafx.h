@@ -46,6 +46,7 @@ static struct GdiplusStartupInput m_gdiplusStartupInput;
 
 
 #include <afxsock.h>            // MFC Ì×½Ó×ÖÀ©Õ¹
+#include <afxdhtml.h>
 
 
 

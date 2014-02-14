@@ -19,6 +19,7 @@ class CVLPRDemoApp : public CWinAppEx
 {
 public:
 	CVLPRDemoApp();
+	static CString m_appPath;
 
 // ÖØÐ´
 	public:

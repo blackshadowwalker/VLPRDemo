@@ -131,9 +131,10 @@ FFmpegVideo::FFmpegVideo(char* chVidName1, int iProcessOrder1, float fRate1)
 		pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height,
 		PIX_FMT_BGR24, SWS_BICUBIC, NULL, NULL, NULL);
 
-	this->getOneFrame();
-
-	bIfSuccess = true;
+	if(this->getOneFrame()==0)
+		bIfSuccess = true;
+	else
+		bIfSuccess = false;
 }
 
 void FFmpegVideo::restart()

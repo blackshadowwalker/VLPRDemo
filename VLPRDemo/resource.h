@@ -7,7 +7,12 @@
 #define IDS_ABOUTBOX                    101
 #define IDD_VLPRDEMO_DIALOG             102
 #define IDP_SOCKETS_INIT_FAILED         103
+#define IDR_HTML_CONFIGDLG              104
+#define IDR_HTML_LOADINGDLG             105
 #define IDR_MAINFRAME                   128
+#define IDD_DIALOG1                     131
+#define IDD_DIALOG_CONFIG               131
+#define IDD_LOADING_DLG                 132
 #define IDC_LIST                        1001
 #define ID_VIDEO_WALL                   1002
 #define ID_PICTURE                      1003
@@ -25,17 +30,22 @@
 #define ID_GROUP_OPERATE                1016
 #define IDC_BUTTON1                     1017
 #define BT_NEXT_PICTURE                 1017
+#define BT_BROWSER_FOLDER               1017
 #define ID_IMAGE_DIR                    1018
-#define IDC_BUTTON2                     1019
 #define BT_BROWSER                      1019
+#define IDC_CHECK1                      1020
+#define BT_SET_CONFIG                   1021
+#define EDIT_IMAGE_MAX_WIDTH            1022
+#define EDIT_IMAGE_MAX_HEIGHT           1023
+#define EDIT_DIR                        1024
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        131
+#define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1020
-#define _APS_NEXT_SYMED_VALUE           101
+#define _APS_NEXT_CONTROL_VALUE         1026
+#define _APS_NEXT_SYMED_VALUE           106
 #endif
 #endif
