@@ -25,6 +25,21 @@ typedef enum
 	E_TF_OTHER,        //其类型
 }TF_LPlateType;
 
+
+typedef enum
+{
+	E_TF_BGR,
+	E_TF_RGB,
+}TF_ImageType;
+
+typedef struct
+{
+	char cVersion[64];     //版本号
+	char cComplieDate[64]; //编译时间
+	char cCorpName[256];   //公司名称
+}TF_SDK_Details;
+
+
 //车身颜色
 typedef enum
 {
@@ -46,8 +61,9 @@ typedef struct
 	int iBottom;
 }TF_Rect;
 
-typedef struct 
+typedef struct TF_RecParma
 {
+	TF_ImageType eImageType;  //图像类型
 	int iImageMode;           //0：为帧模式 1：为场模式
 	int iRecMode;             //识别模式，0：单张图片识别，1:视频检测+识别，2：视频多帧融合识别(注：1模式比2模式快，但识别率和捕获率比2低)
 	int iResultNum;           //输出结果参数，最多支持输出8个结果
@@ -56,6 +72,10 @@ typedef struct
 	int iImageWidth;          //图片宽度 只针对视频识别模式设置(模式1 模式2)
 	int iImageHeight;         //图片高度 只针对视频识别模式设置(模式1 模式2)
 	char pLocalChinese[3];    //本地汉字字符，如果此字符设置为空或者31个省份之外的字，则不使用首汉字
+
+	TF_RecParma(){
+		eImageType  = E_TF_BGR;
+	}
 }TF_RecParma;
 
 typedef struct
@@ -92,6 +112,7 @@ extern "C"  __declspec (dllexport) int   TFLPR_ThreadInit();  //线程初始化，只调
 extern "C"  __declspec (dllexport) void* TFLPR_Init(TF_RecParma RecParma);  //初始化,每个线程都必须调用一次
 extern "C"  __declspec (dllexport) int   TFLPR_RecImage(const unsigned char *pBits, int iWidth, int iHeight ,TF_Result* pLprResult,TF_Rect* recROI,void* pInstance);//识别
 extern "C"  __declspec (dllexport) void  TFLPR_Uninit(void* pInstance);       //释放
+extern "C"  __declspec (dllexport) void  TFLPR_GetSDKdetails(TF_SDK_Details* SDK_Details);      //获得版本信息
 
 
 #endif

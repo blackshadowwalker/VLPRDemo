@@ -244,6 +244,8 @@ char *GetDateTime(char *timeString)
 
 void __cdecl debug(const char *format, ...)
 {
+	return ;
+
 	char buf[4096]={0}, *p=buf;
 	
 	char *t = GetDateTime();

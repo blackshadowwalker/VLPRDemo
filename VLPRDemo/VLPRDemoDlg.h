@@ -25,6 +25,7 @@ public:
 	CVLPRDemoDlg(CWnd* pParent = NULL);	// 标准构造函数
 
 	CLoadingDlg loading;
+	void StartProcessVideo(CString fileName);
 
 // 对话框数据
 	enum { IDD = IDD_VLPRDEMO_DIALOG };
@@ -50,6 +51,11 @@ public:
 
 	RecognitionMode recognitionMode;
 
+	void CRect2TF_Rect(CRect &pt , TF_Rect &tfPt, bool b2=true);
+	CRect m_ROIRect;
+	int pointPtr;
+	bool startDraw;
+
 	list<HANDLE> EventList;
 	HANDLE ReginsterMyThread(char *);
 
@@ -69,10 +75,11 @@ public:
 	bool fastProcess;//是否进行快速处理，//开启快速模式，缺点会丢帧
 	clock_t timeStart, timeNow;
 
-
+	char pLocalChinese[3];    //本地汉字字符，如果此字符设置为空或者31个省份之外的字，则不使用首汉字
 	FFmpegVideo		*m_videoplay;
 	TF_RecParma		*pTF_RecParma;
 	TF_Result		*pTF_Result;
+	TF_Rect			ROIRect;
 	unsigned char   *pImageBuffer;
 	void			*pLPRInstance;
 	queue<TF_Result*> LPRQueueResult;
@@ -121,4 +128,8 @@ public:
 	afx_msg void OnBnClickedSetConfig();
 
 	afx_msg void OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedStartAnnay();
+	afx_msg void OnStnClickedVideoWall();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnBnClickedSetArea();
 };

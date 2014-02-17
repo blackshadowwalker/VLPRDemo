@@ -41,6 +41,11 @@
 #define IDC_BUTTON2                     1026
 #define ID_TEXT_SHOW                    1027
 #define IDC_COMBO1                      1028
+#define IDC_COMB_LOCAL                  1030
+#define BT_SET_AREA                     1031
+#define BT_START_ANNAY                  1032
+#define ID_VERSION                      1033
+#define ID_DATE_TIME                    1034
 
 // Next default values for new objects
 // 
@@ -48,7 +53,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1029
+#define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           106
 #endif
 #endif

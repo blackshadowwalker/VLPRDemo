@@ -44,7 +44,7 @@ FFmpegVideo::FFmpegVideo(char* chVidName1, int iProcessOrder1, float fRate1)
 	// Dump information about file onto standard error
 	dump_format(pFormatCtx, 0, chVidName, 0);
 
-	this->iTotalFrameNum = pFormatCtx->streams[0]->duration;
+	this->iTotalFrameNum = pFormatCtx->streams[0]->nb_frames;
 	this->fFrmRat = pFormatCtx->streams[0]->r_frame_rate.num/(float)(pFormatCtx->streams[0]->r_frame_rate.den);
 
 	// Find the first video stream
@@ -66,9 +66,6 @@ FFmpegVideo::FFmpegVideo(char* chVidName1, int iProcessOrder1, float fRate1)
 	pCodecCtx=pFormatCtx->streams[videoStream]->codec;
 
 	printf("%d-%d\n", pCodecCtx->height, pCodecCtx->width);
-
-
-
 
 	// Find the decoder for the video stream
 	pCodec=avcodec_find_decoder(pCodecCtx->codec_id);
@@ -337,46 +334,33 @@ int FFmpegVideo::getOneFrame()
 		{
 			iIfRead = av_read_frame(pFormatCtx, &packet);
 			iNowFrameNum ++;
-			if(iNowFrameNum ==iTotalFrameNum)
-			{
-				ret = -2;
-			}
-
 			this->fRate = iNowFrameNum/(float)iTotalFrameNum;
 			if(iIfRead < 0){
 				ret = -1;
+				if(iNowFrameNum >=iTotalFrameNum)
+				{
+					ret = -2;
+				}
 				break;
 			}
+
+			
+			
 			//if(frameFinished)//ÅÐ¶ÏÊÓÆµìõÊÇ·ñ¶ÁÍê
 			//	return -1;
-
 			// Is this a packet from the video stream?
 			if(packet.stream_index==videoStream) {
-
 				bHaveReadVideoFrame = true;
 				// Decode video frame
 				avcodec_decode_video(pCodecCtx, pFrameOri, &frameFinished, packet.data, packet.size);
-
 				// Did we get a video frame?
 				if(frameFinished) {
-					// Convert the image from its native format to RGB
-					// img_convert((AVPicture *)pFrameRGB, PIX_FMT_RGB24,
-					//                   (AVPicture*)pFrame, pCodecCtx->pix_fmt, pCodecCtx->width,
-					//                  pCodecCtx->height);
-
 					//Get BGR24 pixs
 					sws_scale(ctx, pFrameOri->data, pFrameOri->linesize,
 						0, pCodecCtx->height,pFrameBGR->data,
 						pFrameBGR->linesize);
-
-					//Get RGB24 pixs
-			//		sws_scale(ctx, pFrameOri->data, pFrameOri->linesize,\
-						0, pCodecCtx->height,pFrameRGB->data,\
-						pFrameRGB->linesize);\
-					imageFrame->widthStep = pFrameRGB->linesize[0];
-
 					// Save the frame to disk
-					memset(imageFrame->imageData, 0,  pFrameBGR->linesize[0]*imageFrame->height);
+				//	memset(imageFrame->imageData, 0,  pFrameBGR->linesize[0]*imageFrame->height);
 					memcpy(imageFrame->imageData, pFrameBGR->data[0], pFrameBGR->linesize[0]*imageFrame->height);
 				}
 			}

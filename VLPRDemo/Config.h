@@ -30,4 +30,6 @@ public:
 	CComboBox m_combox;
 	afx_msg void OnCbnSelchangeCombo1();
 	virtual BOOL OnInitDialog();
+	CComboBox m_localCH;
+	char pLocalChinese[3];
 };

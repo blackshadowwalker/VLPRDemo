@@ -36,6 +36,7 @@ void CConfig::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, EDIT_IMAGE_MAX_HEIGHT, m_imageMinWidth);
 	DDX_Text(pDX, EDIT_DIR, m_imageDir);
 	DDX_Control(pDX, IDC_COMBO1, m_combox);
+	DDX_Control(pDX, IDC_COMB_LOCAL, m_localCH);
 }
 
 
@@ -49,9 +50,11 @@ END_MESSAGE_MAP()
 
 // CConfig 消息处理程序
 
+
 void CConfig::OnBnClickedOk()
 {
 	UpdateData(true);
+
 	if(m_imageMaxWidth>400 || m_imageMaxWidth<90){
 		MessageBox("车牌最大宽度范围是(90 - 400)");
 		return ;
@@ -60,6 +63,8 @@ void CConfig::OnBnClickedOk()
 		MessageBox("车牌最小宽度范围是(60 - 120)");
 		return ;
 	}
+
+	m_localCH.GetWindowText(pLocalChinese, 3);
 
 	OnOK();
 }
@@ -101,6 +106,7 @@ void CConfig::OnCbnSelchangeCombo1()
 }
 
 
+
 BOOL CConfig::OnInitDialog()
 {
 	CDialog::OnInitDialog();
@@ -108,6 +114,14 @@ BOOL CConfig::OnInitDialog()
 	m_combox.AddString("默认主题");
 	m_combox.AddString("AquaOS");
 	m_combox.SetCurSel(0);
+
+	int index = 0;
+	for(int i=0; i<31; i++){
+		m_localCH.AddString(character[i]);
+		if(strcmp(pLocalChinese, character[i])==0)
+			index =i;
+	}
+	m_localCH.SetCurSel(index);
 
 	return TRUE;  
 }
