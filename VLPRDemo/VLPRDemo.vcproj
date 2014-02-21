@@ -326,6 +326,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\include\TH_ErrorDef.h"
+				>
+			</File>
+			<File
+				RelativePath="..\include\TH_PlateID.h"
+				>
+			</File>
+			<File
 				RelativePath=".\VideoUtil.h"
 				>
 			</File>

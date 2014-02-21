@@ -98,15 +98,41 @@ typedef struct  TF_Result
 	int iMoveDir;               //车辆运动方向 -1：未知, 0：朝近运动，1：朝远运动，
 	TF_LVehicleColor eVColor1; //车身主颜色
 	TF_LVehicleColor eVColor2; //车身次颜色
-	unsigned char *pResultBits; //视频识别模式中抓拍的图片,视频模式识别下有效，需要开辟
+	unsigned char *pResultBits; //视plateColor频识别模式中抓拍的图片,视频模式识别下有效，需要开辟
 	TF_Time sTime;             //视频识别模式中抓拍此张图的时间     
 	long	takesTime; //耗时
+	char	nCarLogo[20]; //车标
 
     TF_Result(){
 		memset(this, 0, sizeof(TF_Result));
 	}
 }TF_Result;
 
+
+typedef struct LPR_Result
+{
+	char plate[32];//车牌
+	float confidence;//置信度
+	CRect plateRect;//车牌区域
+	char  plateType[32];//车牌类型
+//	char  plateColor[32];//车牌颜色
+	
+	char  carLogo[32];//车标
+	char  carColor1[32];//车辆颜色
+	char  carColor2[32];//车辆次颜色
+	char  direct[32];//运动方向
+
+	unsigned char * pResultBits;
+	int imageWidth;
+	int imageHeight;
+
+	char  takesTime;//耗时
+	
+	LPR_Result(){
+		memset(this, 0, sizeof(LPR_Result));
+	}
+
+}LPR_Result;
 
 extern "C"  __declspec (dllexport) int   TFLPR_ThreadInit();  //线程初始化，只调用一次
 extern "C"  __declspec (dllexport) void* TFLPR_Init(TF_RecParma RecParma);  //初始化,每个线程都必须调用一次

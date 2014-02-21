@@ -343,8 +343,6 @@ int FFmpegVideo::getOneFrame()
 				}
 				break;
 			}
-
-			
 			
 			//if(frameFinished)//≈–∂œ ”∆µÏı «∑Ò∂¡ÕÍ
 			//	return -1;

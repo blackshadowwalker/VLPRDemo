@@ -193,6 +193,14 @@ char* FileUtil::SelectFolder(HWND hwnd, char* title)
 #else  
 	BROWSEINFO bi;  
 	ZeroMemory(&bi,sizeof(BROWSEINFO));  
+		bi.hwndOwner		= hwnd;
+	bi.pidlRoot			= NULL;
+	bi.lpszTitle		= (title); //选择目录对话框的上部分的标题
+	//添加新建文件夹按钮 BIF_NEWDIALOGSTYLE
+	bi.ulFlags			=  BIF_NEWDIALOGSTYLE | BIF_RETURNONLYFSDIRS | BIF_RETURNFSANCESTORS;
+	bi.lpfn				= NULL;
+	bi.lParam			= 0;
+	bi.iImage			= 0;
 	LPITEMIDLIST pidl=(LPITEMIDLIST)CoTaskMemAlloc(sizeof(LPITEMIDLIST));  
 	pidl = SHBrowseForFolder(&bi);  
 	TCHAR * path = new TCHAR[MAX_PATH];  
@@ -244,7 +252,7 @@ char *GetDateTime(char *timeString)
 
 void __cdecl debug(const char *format, ...)
 {
-	return ;
+//	return ;
 
 	char buf[4096]={0}, *p=buf;
 	

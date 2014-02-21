@@ -8,14 +8,32 @@
 #include "TFLPRecognition.h"
 #include "afxcmn.h"
 #include "afxwin.h"
+
+#include "Config.h"
+#include "LoadingDlg.h"
+#include "TH_PlateID.h"
+
+//=====  STL ==============
 #include <queue>
 #include <iostream>
 #include <list>
-#include "Config.h"
-#include "LoadingDlg.h"
 using namespace std;
+//=========================
+
+typedef struct LPR_Image
+{
+	unsigned char* buffer;
+	int  imageWidth;
+	int  imageHeight;
+	int  imageSize;
+	LPR_Image(){
+		memset(this, 0, sizeof(LPR_Image));
+	}
+}LPR_Image;
+
 
 enum RecognitionMode{ VIDEO,  PICTURE};
+enum COMPANY {NONE, TELEFRAME, WENTONG};
 
 // CVLPRDemoDlg 对话框
 class CVLPRDemoDlg : public CDialog
@@ -26,6 +44,10 @@ public:
 
 	CLoadingDlg loading;
 	void StartProcessVideo(CString fileName);
+	COMPANY company;
+
+	bool  TF_LPR_canRun;
+	bool  TH_LPR_canRun;
 
 // 对话框数据
 	enum { IDD = IDD_VLPRDEMO_DIALOG };
@@ -51,10 +73,13 @@ public:
 
 	RecognitionMode recognitionMode;
 
-	void CRect2TF_Rect(CRect &pt , TF_Rect &tfPt, bool b2=true);
+	void CRect2TF_Rect(CRect &pt , TF_Rect &tfPt, int imageWidth, int imageHeight, bool b2=true);
 	CRect m_ROIRect;
 	int pointPtr;
 	bool startDraw;
+
+	TH_PlateIDCfg plateConfigTh;
+	bool TH_InitDll(int bMovingImage);
 
 	list<HANDLE> EventList;
 	HANDLE ReginsterMyThread(char *);
@@ -70,8 +95,6 @@ public:
 	CString m_imageDir;
 	int plateMaxWidth;
 	int plateMinWidth;
-	int imageWidth;
-	int imageHeight;
 	bool fastProcess;//是否进行快速处理，//开启快速模式，缺点会丢帧
 	clock_t timeStart, timeNow;
 
@@ -82,15 +105,17 @@ public:
 	TF_Rect			ROIRect;
 	unsigned char   *pImageBuffer;
 	void			*pLPRInstance;
-	queue<TF_Result*> LPRQueueResult;
-	queue<unsigned char*> imagesQueue;
-	queue<unsigned char*> imagesQueuePlay;
-	unsigned char*  imageDataForShow;
+	queue<LPR_Result*> LPRQueueResult;
+	queue<LPR_Image*> imagesQueue;
+	queue<LPR_Image*> imagesQueuePlay;
+
+	int imageWidth;
+	int imageHeight;
 		
 	afx_msg void OnBnClickedPause();
 	afx_msg void OnBnClickedStop();
-	void	PlayVideo(unsigned char*);
-	void	ShowPicture(unsigned char*);
+	void	PlayVideo(unsigned char*, int imageWidht, int imageHeight);
+	void	ShowPicture(unsigned char *pix, int imageWidht, int imageHeight);
 	void	ShowPlatePicture(unsigned char*, int w, int h);
 
 	bool  bPlay;
@@ -132,4 +157,5 @@ public:
 	afx_msg void OnStnClickedVideoWall();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnBnClickedSetArea();
+	afx_msg void OnBnClickedCarlogoDetect();
 };
