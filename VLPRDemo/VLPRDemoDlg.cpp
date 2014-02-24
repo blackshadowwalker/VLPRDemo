@@ -453,15 +453,15 @@ void ProcessResultThread(void *pParam)
 				timer = time(NULL);
 				struct tm *tblock;
 				tblock = localtime(&timer);
-				sprintf(temp,"%d-%d-%d_%d.%d.%d", tblock->tm_year+1900, tblock->tm_mon+1, tblock->tm_mday, tblock->tm_hour, tblock->tm_min, tblock->tm_sec );
+				sprintf(temp,"%04d%02d%02d%02d%02d%02d", tblock->tm_year+1900, tblock->tm_mon+1, tblock->tm_mday, tblock->tm_hour, tblock->tm_min, tblock->tm_sec );
 			}
-			sprintf(filename, "%s/%s_%s_plate.bmp", dlg->m_imageDir, temp, result->plate);
+			sprintf(filename, "%s/%s_%s_location_plate.bmp", dlg->m_imageDir, temp, result->plate);
 		debug(filename);
 			VideoUtil::write24BitBmpFile(filename, w, h,(unsigned char*)plate, true, linestep);//车牌图片
 			dlg->m_list.SetItemText(nRow, column++, filename);//车牌位置  column = 10
 			
 			//	delete plate;
-			sprintf(filename, "%s/%s_%s.bmp", dlg->m_imageDir, temp, result->plate);
+			sprintf(filename, "%s/%s_%s_location.bmp", dlg->m_imageDir, temp, result->plate);
 			VideoUtil::write24BitBmpFile(filename, result->imageWidth, result->imageHeight,(unsigned char*)pBit,  WIDTHSTEP(result->imageWidth));//抓拍特写图
 			dlg->m_list.SetItemText(nRow, column++, filename);//特写图位置  column = 11
 		debug(filename);
