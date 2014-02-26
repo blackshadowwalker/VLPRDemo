@@ -1,0 +1,626 @@
+Revision: 27
+Author: karl.li
+Date: 2014年2月26日 15:04:20
+Message:
+
+----
+Deleted : /lib/TFLPRecognition.h
+
+Revision: 26
+Author: karl.li
+Date: 2014年2月26日 13:20:13
+Message:
+加入了try catch处理异常，可以测试了
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/FileUtil.cpp
+Modified : /VLPRDemo/FileUtil.h
+Modified : /VLPRDemo/VLPRDemo.vcproj
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo.suo
+
+Revision: 25
+Author: karl.li
+Date: 2014年2月24日 15:34:04
+Message:
+修改输出结果图片的命名为： 时间_车牌_地点.bmp
+如:20140224152924_京W56Y22_location.bmp
+----
+Modified : /README.md
+Modified : /Release/VLPRDemo.exe
+Added : /VLPRDemo/MSJExceptionHandler.cpp
+Added : /VLPRDemo/MSJExceptionHandler.h
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo.suo
+
+Revision: 24
+Author: karl.li
+Date: 2014年2月21日 13:21:53
+Message:
+修正了图片识别模式下，会崩溃的问题，是由于使用了视频识别模式中的全局imageWidth和imageHeight，现在将队列修改成了结构体，包含图像和宽高，目前运行稳定
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Modified : /include/TFLPRecognition.h
+
+Revision: 23
+Author: karl.li
+Date: 2014年2月20日 16:44:29
+Message:
+修改了初始化文通的SDK,会崩溃的情况
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo.suo
+Modified : /VLPRDemo/FileUtil.cpp
+Modified : /include/TH_ErrorDef.h
+Modified : /include/TH_PlateID.h
+
+Revision: 22
+Author: karl.li
+Date: 2014年2月19日 11:30:32
+Message:
+区域生效
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo.suo
+
+Revision: 21
+Author: karl.li
+Date: 2014年2月19日 11:24:29
+Message:
+现在2个算法可以通过界面简单的切换，并且都正常运行
+----
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Modified : /VLPRDemo/FFmpegVideo.cpp
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/resource.h
+
+Revision: 20
+Author: karl.li
+Date: 2014年2月19日 10:38:17
+Message:
+加入了文通车牌识别
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Modified : /include/TFLPRecognition.h
+Modified : /VLPRDemo/FileUtil.cpp
+Added : /include/TH_ErrorDef.h
+Added : /include/TH_PlateID.h
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/resource.h
+Added : /Release/RecoCore.dll
+Modified : /Release/TFLPRecognition.dll
+Added : /Release/TH_PLATEID.dll
+Modified : /Release/VLPRConfig.ini
+Modified : /VLPRDemo/VLPRDemo.vcproj
+Added : /include/SkinPPWTL.h
+Modified : /lib/TFLPRecognition.lib
+Added : /lib/TH_PLATEID.lib
+
+Revision: 19
+Author: karl.li
+Date: 2014年2月17日 16:54:45
+Message:
+加入了 车牌的本地汉字和设置检测区域
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Modified : /include/TFLPRecognition.h
+Modified : /VLPRDemo/FileUtil.cpp
+Modified : /VLPRDemo/FFmpegVideo.cpp
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/resource.h
+Modified : /Release/TFLPRecognition.dll
+Modified : /Release/VLPRConfig.ini
+Modified : /VLPRDemo/VLPRDemo.vcproj
+Modified : /lib/TFLPRecognition.lib
+Modified : /VLPRDemo/Config.cpp
+Modified : /VLPRDemo/Config.h
+Modified : /VLPRDemo/stdafx.h
+
+Revision: 18
+Author: karl.li
+Date: 2014年2月17日 10:32:39
+Message:
+
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo.suo
+
+Revision: 17
+Author: karl.li
+Date: 2014年2月14日 18:24:51
+Message:
+修正了初始化路径不存在的问题
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo.suo
+Modified : /VLPRDemo/FileUtil.cpp
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/resource.h
+Modified : /VLPRDemo/Config.cpp
+Modified : /VLPRDemo/Config.h
+Modified : /VLPRDemo/stdafx.h
+Modified : /VLPRDemo/VLPRDemo.cpp
+Modified : /VLPRDemo/VLPRDemo.h
+
+Revision: 16
+Author: karl.li
+Date: 2014年2月14日 16:52:51
+Message:
+
+----
+Modified : /README.md
+
+Revision: 15
+Author: karl.li
+Date: 2014年2月14日 16:51:24
+Message:
+增加了皮肤库
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /Release/VLPRConfig.ini
+Modified : /VLPRDemo/VLPRDemo.cpp
+Modified : /VLPRDemo/VLPRDemo.h
+Added : /Release/SkinPPWTL.dll
+Added : /Release/skin
+Added : /Release/skin/AquaOS.ssk
+Added : /VLPRDemo/skin
+Added : /VLPRDemo/skin/AquaOS.ssk
+Added : /lib/SkinPPWTL.lib
+Added : /lib/TFLPRecognition.h
+
+Revision: 14
+Author: karl.li
+Date: 2014年2月14日 16:32:43
+Message:
+修正：
+1.车牌宽度增加限制 (60-12)(120-400)
+2.增加退出提示对话框
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo.suo
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/resource.h
+Modified : /Release/VLPRConfig.ini
+Modified : /VLPRDemo/Config.cpp
+Modified : /VLPRDemo/Config.h
+Modified : /VLPRDemo/LoadingDlg.cpp
+Modified : /VLPRDemo/LoadingDlg.h
+
+Revision: 13
+Author: karl.li
+Date: 2014年2月14日 16:10:20
+Message:
+
+----
+Modified : /README.md
+Added : /VLPRDemo/LoadingDlg.cpp
+Added : /VLPRDemo/LoadingDlg.h
+Added : /VLPRDemo/LoadingDlg.htm
+Added : /VLPRDemo/VLPRDemo.vcproj.teleframe-PC.teleframe.user
+
+Revision: 12
+Author: karl.li
+Date: 2014年2月14日 16:02:28
+Message:
+增加了配置界面，基本属于完工
+----
+Added : /Release
+Added : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Modified : /VLPRDemo/FileUtil.cpp
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/resource.h
+Added : /Release/TFLPRecognition.dll
+Added : /Release/VLPRConfig.ini
+Modified : /VLPRDemo/VLPRDemo.vcproj
+Added : /VLPRDemo/Config.cpp
+Added : /VLPRDemo/Config.h
+Modified : /VLPRDemo/stdafx.h
+Modified : /VLPRDemo/VLPRDemo.cpp
+Modified : /VLPRDemo/VLPRDemo.h
+Deleted : /Debug/SDL.dll
+Deleted : /Debug/TFLPRecognition.dll
+Deleted : /Debug/avcodec.dll
+Deleted : /Debug/avcore.dll
+Deleted : /Debug/avdevice.dll
+Deleted : /Debug/avfilter.dll
+Deleted : /Debug/avformat.dll
+Deleted : /Debug/avutil.dll
+Deleted : /Debug/postproc.dll
+Deleted : /Debug/pthreadGC2.dll
+Deleted : /Debug/pthreadVC2.dll
+Deleted : /Debug/swscale.dll
+Added : /Release/SDL.dll
+Added : /Release/avcodec.dll
+Added : /Release/avcore.dll
+Added : /Release/avdevice.dll
+Added : /Release/avfilter.dll
+Added : /Release/avformat.dll
+Added : /Release/avutil.dll
+Added : /Release/postproc.dll
+Added : /Release/pthreadGC2.dll
+Added : /Release/pthreadVC2.dll
+Added : /Release/swscale.dll
+
+Revision: 11
+Author: karl.li
+Date: 2014年2月14日 12:05:11
+Message:
+添加了快速处理功能，缺点是会丢帧
+----
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Modified : /VLPRDemo/FFmpegVideo.cpp
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/resource.h
+Modified : /README.md
+
+Revision: 10
+Author: karl.li
+Date: 2014年2月13日 19:03:16
+Message:
+1. 使用新版本的车牌识别 dll 
+next
+1.配置界面
+2.用sqlite 进入数据保存
+----
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo.suo
+Modified : /include/TFLPRecognition.h
+Modified : /lib/TFLPRecognition.lib
+Modified : /README.md
+Modified : /Debug/TFLPRecognition.dll
+
+Revision: 9
+Author: karl.li
+Date: 2014年2月13日 16:48:12
+Message:
+stable
+next:
+use new TFLPRecognition.dll
+----
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+
+Revision: 8
+Author: karl.li
+Date: 2014年2月13日 14:04:53
+Message:
+图片识别的增加一下张按钮功能	
+
+----
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Modified : /VLPRDemo/FileUtil.cpp
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/resource.h
+Modified : /README.md
+Modified : /VLPRDemo/FileUtil.h
+Modified : /VLPRDemo/VideoUtil.cpp
+
+Revision: 7
+Author: karl.li
+Date: 2014年2月13日 12:00:58
+Message:
+1. 增加了打开图片并进行车牌识别,正常运行
+2. 修改视频流车牌识别，现在速度很快，修改部分如下
+	* VideoThread 与 RecognitionThread
+	* VideoThread 与 PlayThread
+	* RecognitionThread 与 ProcessResultThread
+	的线程访问冲突，现在修改成了
+	* VideoThread 和 RecognitionThread 访问队列 imagesQueue,VideoThread一直new imageData内存空间，然后放入队列 imagesQueue,
+	  RecognitionThread 从队列 imagesQueue 获取数据并delete
+	* RecognitionThread将显示的图片（每次memcpy到全局的内存空间imageDataForShow）放入队列 imagesQueuePlay,
+	  然后接着处理车牌，PlayThread一直读取队列imagesQueuePlay
+
+下一步：
+1. 图片识别的增加一下张按钮功能	
+----
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Modified : /include/TFLPRecognition.h
+Modified : /VLPRDemo/FileUtil.cpp
+Modified : /VLPRDemo/FFmpegVideo.cpp
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/resource.h
+Modified : /VLPRDemo/VLPRDemo.vcproj
+Modified : /VLPRDemo/stdafx.h
+Modified : /VLPRDemo/VLPRDemo.cpp
+Modified : /README.md
+Modified : /VLPRDemo/FileUtil.h
+Modified : /VLPRDemo/VideoUtil.cpp
+Modified : /VLPRDemo/VideoUtil.h
+Added : /VLPRDemo/public.cpp
+Added : /VLPRDemo/public.h
+Modified : /VLPRDemo/res/VLPRDemo.ico
+
+Revision: 6
+Author: karl.li
+Date: 2014年2月11日 19:17:21
+Message:
+修改了部分界面，将车牌识别结果显示在m_list
+下一步:
+增加配置界面
+----
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo.suo
+Modified : /include/TFLPRecognition.h
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /README.md
+
+Revision: 5
+Author: karl.li
+Date: 2014年2月11日 18:13:11
+Message:
+1.已将将识别过程拆分成 视频流获取线程（存入队列）和识别线程，以提供速度
+下一步
+1.将结果显示在界面，并增加配置界面
+----
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo.suo
+Modified : /VLPRDemo/FFmpegVideo.cpp
+Modified : /README.md
+
+Revision: 4
+Author: karl.li
+Date: 2014年2月11日 16:44:39
+Message:
+1. 正常显示图片，不再失真
+2. 车牌识别调用成功，并用3个线程来处理，1）播放线程;2）处理结果线程，包含存储图片车车牌图片并显示；3)识别线程
+下一步
+1. 将识别过程拆分成 视频流获取线程（存入队列）和识别线程，以提供速度
+2. 修改界面
+----
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Modified : /include/TFLPRecognition.h
+Modified : /VLPRDemo/FFmpegVideo.cpp
+Added : /README.md
+
+Revision: 3
+Author: karl.li
+Date: 2014年2月10日 19:45:04
+Message:
+
+----
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Modified : /VLPRDemo/FFmpegVideo.cpp
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/resource.h
+Added : /.gitattributes
+Added : /.gitignore
+
+Revision: 2
+Author: karl.li
+Date: 2014年2月10日 17:20:04
+Message:
+1.完成用FFmpeg打开并获取视频流数据
+2.调用算法库，并输出识别车牌
+3.可以显示但是失真，需要修改
+下一步：
+1.修改显示失真问题
+2.完善界面输出
+3.增加配置
+----
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.suo
+Added : /include
+Added : /include/TFLPRecognition.h
+Modified : /VLPRDemo/FileUtil.cpp
+Added : /VLPRDemo/FFmpegVideo.cpp
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/resource.h
+Modified : /VLPRDemo/VLPRDemo.vcproj
+Added : /lib
+Added : /lib/TFLPRecognition.lib
+Added : /Debug
+Added : /Debug/SDL.dll
+Added : /Debug/TFLPRecognition.dll
+Added : /Debug/avcodec.dll
+Added : /Debug/avcore.dll
+Added : /Debug/avdevice.dll
+Added : /Debug/avfilter.dll
+Added : /Debug/avformat.dll
+Added : /Debug/avutil.dll
+Added : /Debug/postproc.dll
+Added : /Debug/pthreadGC2.dll
+Added : /Debug/pthreadVC2.dll
+Added : /Debug/swscale.dll
+Modified : /VLPRDemo/FileUtil.h
+Added : /VLPRDemo/VideoUtil.cpp
+Added : /VLPRDemo/VideoUtil.h
+Added : /SDL
+Added : /SDL/include
+Added : /SDL/include/SDL.h
+Added : /SDL/include/SDL_active.h
+Added : /SDL/include/SDL_audio.h
+Added : /SDL/include/SDL_byteorder.h
+Added : /SDL/include/SDL_cdrom.h
+Added : /SDL/include/SDL_config.h
+Added : /SDL/include/SDL_config_amiga.h
+Added : /SDL/include/SDL_config_dreamcast.h
+Added : /SDL/include/SDL_config_macos.h
+Added : /SDL/include/SDL_config_macosx.h
+Added : /SDL/include/SDL_config_minimal.h
+Added : /SDL/include/SDL_config_nds.h
+Added : /SDL/include/SDL_config_os2.h
+Added : /SDL/include/SDL_config_symbian.h
+Added : /SDL/include/SDL_config_win32.h
+Added : /SDL/include/SDL_copying.h
+Added : /SDL/include/SDL_cpuinfo.h
+Added : /SDL/include/SDL_endian.h
+Added : /SDL/include/SDL_error.h
+Added : /SDL/include/SDL_events.h
+Added : /SDL/include/SDL_getenv.h
+Added : /SDL/include/SDL_joystick.h
+Added : /SDL/include/SDL_keyboard.h
+Added : /SDL/include/SDL_keysym.h
+Added : /SDL/include/SDL_loadso.h
+Added : /SDL/include/SDL_main.h
+Added : /SDL/include/SDL_mouse.h
+Added : /SDL/include/SDL_mutex.h
+Added : /SDL/include/SDL_name.h
+Added : /SDL/include/SDL_opengl.h
+Added : /SDL/include/SDL_platform.h
+Added : /SDL/include/SDL_quit.h
+Added : /SDL/include/SDL_rwops.h
+Added : /SDL/include/SDL_stdinc.h
+Added : /SDL/include/SDL_syswm.h
+Added : /SDL/include/SDL_thread.h
+Added : /SDL/include/SDL_timer.h
+Added : /SDL/include/SDL_types.h
+Added : /SDL/include/SDL_version.h
+Added : /SDL/include/SDL_video.h
+Added : /SDL/include/begin_code.h
+Added : /SDL/include/close_code.h
+Added : /SDL/lib
+Added : /SDL/lib/SDL.dll
+Added : /SDL/lib/SDL.lib
+Added : /SDL/lib/SDLmain.lib
+Added : /VLPRDemo/Debug
+Added : /VLPRDemo/FFmpegVideo.h
+Added : /ffmpeg
+Added : /ffmpeg/bin
+Added : /ffmpeg/include
+Added : /ffmpeg/include/inttypes.h
+Added : /ffmpeg/include/libavcodec
+Added : /ffmpeg/include/libavcodec/avcodec.h
+Added : /ffmpeg/include/libavcodec/avfft.h
+Added : /ffmpeg/include/libavcodec/dxva2.h
+Added : /ffmpeg/include/libavcodec/opt.h
+Added : /ffmpeg/include/libavcodec/vaapi.h
+Added : /ffmpeg/include/libavcodec/vdpau.h
+Added : /ffmpeg/include/libavcodec/version.h
+Added : /ffmpeg/include/libavcodec/xvmc.h
+Added : /ffmpeg/include/libavdevice
+Added : /ffmpeg/include/libavdevice/avdevice.h
+Added : /ffmpeg/include/libavfilter
+Added : /ffmpeg/include/libavfilter/avcodec.h
+Added : /ffmpeg/include/libavfilter/avfilter.h
+Added : /ffmpeg/include/libavfilter/avfiltergraph.h
+Added : /ffmpeg/include/libavfilter/vsink_buffer.h
+Added : /ffmpeg/include/libavfilter/vsrc_buffer.h
+Added : /ffmpeg/include/libavformat
+Added : /ffmpeg/include/libavformat/avformat.h
+Added : /ffmpeg/include/libavformat/avio.h
+Added : /ffmpeg/include/libavformat/version.h
+Added : /ffmpeg/include/libavutil
+Added : /ffmpeg/include/libavutil/adler32.h
+Added : /ffmpeg/include/libavutil/aes.h
+Added : /ffmpeg/include/libavutil/attributes.h
+Added : /ffmpeg/include/libavutil/audioconvert.h
+Added : /ffmpeg/include/libavutil/avassert.h
+Added : /ffmpeg/include/libavutil/avconfig.h
+Added : /ffmpeg/include/libavutil/avstring.h
+Added : /ffmpeg/include/libavutil/avutil.h
+Added : /ffmpeg/include/libavutil/base64.h
+Added : /ffmpeg/include/libavutil/bswap.h
+Added : /ffmpeg/include/libavutil/common.h
+Added : /ffmpeg/include/libavutil/cpu.h
+Added : /ffmpeg/include/libavutil/crc.h
+Added : /ffmpeg/include/libavutil/dict.h
+Added : /ffmpeg/include/libavutil/error.h
+Added : /ffmpeg/include/libavutil/eval.h
+Added : /ffmpeg/include/libavutil/fifo.h
+Added : /ffmpeg/include/libavutil/file.h
+Added : /ffmpeg/include/libavutil/imgutils.h
+Added : /ffmpeg/include/libavutil/intfloat_readwrite.h
+Added : /ffmpeg/include/libavutil/intreadwrite.h
+Added : /ffmpeg/include/libavutil/lfg.h
+Added : /ffmpeg/include/libavutil/log.h
+Added : /ffmpeg/include/libavutil/lzo.h
+Added : /ffmpeg/include/libavutil/mathematics.h
+Added : /ffmpeg/include/libavutil/md5.h
+Added : /ffmpeg/include/libavutil/mem.h
+Added : /ffmpeg/include/libavutil/opt.h
+Added : /ffmpeg/include/libavutil/parseutils.h
+Added : /ffmpeg/include/libavutil/pixdesc.h
+Added : /ffmpeg/include/libavutil/pixfmt.h
+Added : /ffmpeg/include/libavutil/random_seed.h
+Added : /ffmpeg/include/libavutil/rational.h
+Added : /ffmpeg/include/libavutil/samplefmt.h
+Added : /ffmpeg/include/libavutil/sha.h
+Added : /ffmpeg/include/libavutil/sha1.h
+Added : /ffmpeg/include/libswscale
+Added : /ffmpeg/include/libswscale/swscale.h
+Added : /ffmpeg/include/stdint.h
+Added : /ffmpeg/lib
+Added : /ffmpeg/lib/avcodec.lib
+Added : /ffmpeg/lib/avcore.lib
+Added : /ffmpeg/lib/avdevice.lib
+Added : /ffmpeg/lib/avfilter.lib
+Added : /ffmpeg/lib/avformat.lib
+Added : /ffmpeg/lib/avutil.lib
+Added : /ffmpeg/lib/swscale.lib
+
+Revision: 1
+Author: karl.li
+Date: 2014年2月8日 17:03:11
+Message:
+
+----
+Added : /VLPRDemo
+Added : /VLPRDemo/VLPRDemoDlg.cpp
+Added : /VLPRDemo/VLPRDemoDlg.h
+Added : /VLPRDemo.suo
+Added : /VLPRDemo/FileUtil.cpp
+Added : /VLPRDemo/VLPRDemo.aps
+Added : /VLPRDemo/VLPRDemo.rc
+Added : /VLPRDemo/resource.h
+Added : /VLPRDemo/VLPRDemo.vcproj
+Added : /VLPRDemo/stdafx.h
+Added : /VLPRDemo/VLPRDemo.cpp
+Added : /VLPRDemo/VLPRDemo.h
+Added : /VLPRDemo/FileUtil.h
+Added : /VLPRDemo/res
+Added : /VLPRDemo/res/VLPRDemo.ico
+Added : /ClearTempFiles.bat
+Added : /VLPRDemo/ReadMe.txt
+Added : /VLPRDemo/res/VLPRDemo.rc2
+Added : /VLPRDemo/stdafx.cpp
+Added : /VLPRDemo/targetver.h
+Added : /VLPRDemo.sln
+

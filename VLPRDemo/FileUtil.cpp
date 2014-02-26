@@ -250,9 +250,30 @@ char *GetDateTime(char *timeString)
 	return timeString;
 }
 
+void __cdecl release(const char *format, ...)
+{
+	char buf[4096]={0}, *p=buf;
+	
+	char *t = GetDateTime();
+	sprintf(p,"%s ",t);
+	p += strlen(p);
+
+    va_list args;
+    va_start(args, format);
+    p += _vsnprintf(p, sizeof buf - 1, format, args);
+    va_end(args);
+  // while ( p > buf && isspace(p[-1]) )    *--p = '\0';
+    *p++ = '\r';
+    *p++ = '\n';
+    *p = '\0';
+
+    OutputDebugString(buf);
+}
+
+
 void __cdecl debug(const char *format, ...)
 {
-//	return ;
+	return ;
 
 	char buf[4096]={0}, *p=buf;
 	

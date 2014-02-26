@@ -31,3 +31,4 @@ private:
 
 char *GetDateTime(char *timeString=0);
 void __cdecl debug(const char *format, ...);
+void __cdecl release(const char *format, ...);
