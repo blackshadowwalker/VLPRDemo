@@ -1,3 +1,27 @@
+
+
+Revision: 29
+Author: karl.li
+Date: 2014年2月27日 18:26:44
+Message:
+修复 PlayThread Queue 会 爆满 导致内存泄漏的bug
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/FileUtil.cpp
+Modified : /VLPRDemo/VLPRDemo.aps
+Modified : /VLPRDemo/VLPRDemo.rc
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/resource.h
+Modified : /VLPRDemo.suo
+
+Revision: 28
+Author: karl.li
+Date: 2014年2月26日 15:15:32
+Message:
+
+----
+Added : /svnlog.txt
+
 Revision: 27
 Author: karl.li
 Date: 2014年2月26日 15:04:20

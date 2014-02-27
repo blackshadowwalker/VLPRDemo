@@ -389,7 +389,14 @@ void ProcessResultThread(void *pParam)
 			Sleep(10);		
 			continue;
 		}
+		if(dlg->LPRQueueResult.empty())
+			continue;
 		LPR_Result *result = dlg->LPRQueueResult.front();
+
+		sprintf(temp, "结果处理还剩余: %d ", dlg->LPRQueueResult.size());
+		release(temp);
+		dlg->GetDlgItem(ID_STATUS2)->SetWindowText(temp);
+
 		debug("ProcessResultThread Frame=%d  Plate=%s  (%d,%d)-(%d,%d)", nFrames, result->plate, \
 			result->plateRect.left, result->plateRect.top,
 			result->plateRect.right, result->plateRect.bottom);
@@ -485,11 +492,22 @@ void PlayThread(void *pParam)
 		CVLPRDemoDlg *dlg = (CVLPRDemoDlg*)pParam;
 		HANDLE handleCanExit = dlg->ReginsterMyThread("PlayThread");
 		debug("PlayThread 启动  handle=0x%x", handleCanExit);
+		char temp[256]={0};
 
 		while(WaitForSingleObject(handleExit,0)!=WAIT_OBJECT_0){
-			if(WaitForSingleObject(hShowVideoFrame,0)==0)
+
+			if(dlg->imagesQueuePlay.empty()){
+				Sleep(10);
+				continue;
+			}
+			sprintf(temp, "PlaySize: %d ", dlg->LPRQueueResult.size());
+			release(temp);
+			dlg->GetDlgItem(ID_STATUS3)->SetWindowText(temp);
+
+			if(true)
+	//		if(WaitForSingleObject(hShowVideoFrame,0)==0)
 			{
-				if(dlg->imagesQueuePlay.size() > 0){
+				if(dlg->imagesQueuePlay.empty()==false){
 					LPR_Image* lpr = dlg->imagesQueuePlay.front();
 					dlg->imagesQueuePlay.pop();
 					debug("PlayThread imagesQueuePlay.front  0x%x  imagesQueuePlaysize = %d", lpr, dlg->imagesQueuePlay.size()+1);
@@ -499,15 +517,14 @@ void PlayThread(void *pParam)
 					delete lpr->buffer;
 					delete lpr;
 				}
-			}else{
-				while(dlg->imagesQueuePlay.size() > 0){
-					LPR_Image* lpr = dlg->imagesQueuePlay.front();
-					dlg->imagesQueuePlay.pop();
-					delete lpr->buffer;
-					delete lpr;
-				}
-				Sleep(10);
 			}
+			/*while(dlg->imagesQueuePlay.size() > 1){
+				LPR_Image* lpr = dlg->imagesQueuePlay.front();
+				debug("PlayThread while imagesQueuePlay.front  0x%x  imagesQueuePlaysize = %d", lpr, dlg->imagesQueuePlay.size()+1);
+				dlg->imagesQueuePlay.pop();
+				delete lpr->buffer;
+				delete lpr;
+			}*/
 		}
 		debug("PlayThread 正常退出");
 		SetEvent(handleCanExit);//设置可以退出了
@@ -560,14 +577,14 @@ void RecognitionThread(void *pParam)
 				dlg->imagesQueue.pop();
 				imageSize = pLprImage->imageWidth * pLprImage->imageHeight * 3;
 
-				debug("RecognitionThread imagesQueue.front ed 0x%x   queue size=%d ", pLprImage, dlg->imagesQueue.size());
+				debug("RecognitionThread imagesQueue.front ed 0x%x   imagesQueue size=%d ", pLprImage, dlg->imagesQueue.size());
 
 				LPR_Image *lpr = new LPR_Image();
 				memcpy(lpr, pLprImage, sizeof(LPR_Image));
 				lpr->buffer = new unsigned char[pLprImage->imageSize];
 				memcpy(lpr->buffer, pLprImage->buffer, pLprImage->imageSize);
 				dlg->imagesQueuePlay.push(lpr);//For Play
-				debug("imagesQueuePlay.push( 0x%x )", lpr);
+				debug("imagesQueuePlay.push( 0x%x )  size=%d ", lpr, dlg->imagesQueuePlay.size());
 				SetEvent(hShowVideoFrame);// start play
 
 				ret = 0;
@@ -667,7 +684,8 @@ void RecognitionThread(void *pParam)
 					try
 					{
 						t1 = clock();
-						ret  =  TH_RecogImage( pLprImage->buffer,  pLprImage->imageWidth, pLprImage->imageHeight,  result, &nResultNum, &rcDetect, &dlg->plateConfigTh); 
+						ret = -1;
+					//	ret  =  TH_RecogImage( pLprImage->buffer,  pLprImage->imageWidth, pLprImage->imageHeight,  result, &nResultNum, &rcDetect, &dlg->plateConfigTh); 
 						t2 = clock();
 					}
 					catch(...)
@@ -714,7 +732,8 @@ void RecognitionThread(void *pParam)
 
 
 				dlg->timeNow = clock();
-				sprintf(temp, "Rate:%d fps", nFrames*1000/(dlg->timeNow - dlg->timeStart));
+				sprintf(temp, "识别余量: %d  Rate:%d fps",dlg->imagesQueue.size(), nFrames*1000/(dlg->timeNow - dlg->timeStart));
+				release(temp);
 				debug("RecognitionThread %s",temp );
 				dlg->GetDlgItem(ID_STATUS)->SetWindowText(temp);
 
@@ -770,12 +789,12 @@ void VideoThread(void* pParam)
 			//	if(true)
 			{
 				ResetEvent(handleVideoThreadStoped);
-				if(dlg->fastProcess) //开启快速模式，缺点:会丢帧
-					ret = dlg->m_videoplay->getOneFrame();
+				//if(dlg->fastProcess) //开启快速模式，缺点:会丢帧
+				//	ret = dlg->m_videoplay->getOneFrame();
 				if(dlg->imagesQueue.size() < 10 )
 				{
 					debug("VideoThread dlg->m_videoplay->getOneFrame();");
-					if(!dlg->fastProcess)
+				//	if(!dlg->fastProcess)
 						ret = dlg->m_videoplay->getOneFrame();
 					if(ret==0)
 					{
@@ -790,7 +809,8 @@ void VideoThread(void* pParam)
 						memcpy(pLprImage->buffer,  dlg->m_videoplay->imageFrame->imageData, pLprImage->imageSize);
 
 						dlg->imagesQueue.push(pLprImage);
-						debug("VideoThread imagesQueue.push 0x%x   Qsize=%d  nFrame=%d ", pLprImage, dlg->imagesQueue.size(), dlg->m_videoplay->iNowFrameNum);
+						debug("VideoThread imagesQueue.push 0x%x   imagesQueue=%d  nFrame=%d / %d ", pLprImage, dlg->imagesQueue.size(), 
+								dlg->m_videoplay->iNowFrameNum,  dlg->m_videoplay->iTotalFrameNum);
 					}else{
 						if(ret==-2){
 							ResetEvent(handleVideoThread);
@@ -1616,3 +1636,5 @@ void CVLPRDemoDlg::OnBnClickedCarlogoDetect()
 	}
 
 }
+
+

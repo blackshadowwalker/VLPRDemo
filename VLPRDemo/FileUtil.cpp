@@ -273,9 +273,18 @@ void __cdecl release(const char *format, ...)
 
 void __cdecl debug(const char *format, ...)
 {
-	return ;
+//	return ;
 
 	char buf[4096]={0}, *p=buf;
+
+
+	MEMORYSTATUS MemStat; 
+	MemStat.dwLength=sizeof(MEMORYSTATUS); 
+	GlobalMemoryStatus(&MemStat); //存储内存状态信息 
+//	MemStat.dwAvailPhys;//得到剩余内存大小（单位b） 
+	sprintf(buf, "系统可用内存：大约等于：%ld MB\n ", MemStat.dwAvailPhys/1024/1024); 
+	OutputDebugString(buf);
+	
 	
 	char *t = GetDateTime();
 	sprintf(p,"%s ",t);
