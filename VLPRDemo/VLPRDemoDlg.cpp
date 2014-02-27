@@ -685,7 +685,7 @@ void RecognitionThread(void *pParam)
 					{
 						t1 = clock();
 						ret = -1;
-					//	ret  =  TH_RecogImage( pLprImage->buffer,  pLprImage->imageWidth, pLprImage->imageHeight,  result, &nResultNum, &rcDetect, &dlg->plateConfigTh); 
+						ret  =  TH_RecogImage( pLprImage->buffer,  pLprImage->imageWidth, pLprImage->imageHeight,  result, &nResultNum, &rcDetect, &dlg->plateConfigTh); 
 						t2 = clock();
 					}
 					catch(...)
