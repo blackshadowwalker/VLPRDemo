@@ -29,7 +29,28 @@ void CLoadingDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CLoadingDlg, CDialog)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
 // CLoadingDlg 消息处理程序
+
+INT_PTR CLoadingDlg::DoModal()
+{
+	return CDialog::DoModal();
+}
+
+BOOL CLoadingDlg::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+
+	SetTimer(1, 1000, NULL);
+
+	return TRUE;  
+}
+
+void CLoadingDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	OnOK();
+	CDialog::OnTimer(nIDEvent);
+}

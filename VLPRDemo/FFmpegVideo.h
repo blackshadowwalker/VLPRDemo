@@ -50,6 +50,9 @@ public:
 	void restart();//重新开始
 	void release(); //释放
 
+	long Save2jpeg (uint8_t *buffer, int width, int height, char *fileName);
+	long SaveFrame2jpeg (AVCodecContext *pCodecCtxIn, AVFrame *pFrame, char *fileName);
+
 	int  nFps;
 
 public:

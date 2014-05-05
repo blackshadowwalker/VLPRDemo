@@ -20,4 +20,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	CString m_TextShow;
+	virtual INT_PTR DoModal();
+	virtual BOOL OnInitDialog();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

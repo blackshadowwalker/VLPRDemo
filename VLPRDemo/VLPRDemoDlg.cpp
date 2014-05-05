@@ -384,6 +384,9 @@ void ProcessResultThread(void *pParam)
 	char temp[256]={0};
 	debug("ProcessResultThread 启动  handle=0x%x", handleCanExit);
 
+	CxImage image;
+	CxImage imagePlate;
+
 	while(WaitForSingleObject(handleExit,0)!=WAIT_OBJECT_0){
 		if(dlg->LPRQueueResult.size()<1){
 			Sleep(10);		
@@ -460,18 +463,33 @@ void ProcessResultThread(void *pParam)
 				timer = time(NULL);
 				struct tm *tblock;
 				tblock = localtime(&timer);
-				sprintf(temp,"%04d%02d%02d%02d%02d%02d", tblock->tm_year+1900, tblock->tm_mon+1, tblock->tm_mday, tblock->tm_hour, tblock->tm_min, tblock->tm_sec );
+				sprintf(temp,"%04d-%02d-%02d_%02d.%02d.%02d", tblock->tm_year+1900, tblock->tm_mon+1, tblock->tm_mday, tblock->tm_hour, tblock->tm_min, tblock->tm_sec );
 			}
-			sprintf(filename, "%s/%s_location_%s_plate.bmp", dlg->m_imageDir, temp, result->plate);
-			debug(filename);
-			VideoUtil::write24BitBmpFile(filename, w, h,(unsigned char*)plate, true, linestep);//车牌图片
-			dlg->m_list.SetItemText(nRow, column++, filename);//车牌位置  column = 10
+			//输出结果图片的命名为： 时间_车牌_号牌种类_车牌颜色_车辆速度.bmp \
+				如:	 \
+					2014-02-24_15.29.24 京W56Y2 小型汽车  黑色 0 \
+					2014-02-24_15.29.24_京W56Y22_02_3_0.bmp
 
-			//	delete plate;
-			sprintf(filename, "%s/%s_location_%s.bmp", dlg->m_imageDir, temp, result->plate);
-			VideoUtil::write24BitBmpFile(filename, result->imageWidth, result->imageHeight,(unsigned char*)pBit,  WIDTHSTEP(result->imageWidth));//抓拍特写图
+			// 过车特写图
+			sprintf(filename, "%s\\%s_%s_02_2_0.jpg", dlg->m_imageDir, temp, result->plate );
+			image.CreateFromArray( pBit, result->imageWidth, result->imageHeight, 24, WIDTHSTEP(result->imageWidth), true);
+			image.Save( filename, CXIMAGE_FORMAT_JPG, true );
+			image.Destroy();
+		//	dlg->m_videoplay->Save2jpeg( (unsigned char*)pBit,  result->imageWidth, result->imageHeight,filename);
+		//	VideoUtil::write24BitBmpFile(filename, result->imageWidth, result->imageHeight,(unsigned char*)pBit,  WIDTHSTEP(result->imageWidth));//抓拍特写图
 			dlg->m_list.SetItemText(nRow, column++, filename);//特写图位置  column = 11
 			debug(filename);
+
+			//车牌图片
+			sprintf(filename, "%s\\%s_%s_02_2_0.jpg_plate.jpg", dlg->m_imageDir, temp, result->plate ); 
+			debug(filename);
+			imagePlate.CreateFromArray( plate, w, h, 24, WIDTHSTEP(w), true);
+			imagePlate.Save( filename, CXIMAGE_FORMAT_JPG );//
+			imagePlate.Destroy();
+		//	VideoUtil::write24BitBmpFile(filename, w, h,(unsigned char*)plate, true, linestep);//车牌图片
+			dlg->m_list.SetItemText(nRow, column++, filename);//车牌位置  column = 10
+
+			
 
 			delete pBit;
 		}
@@ -850,7 +868,6 @@ void CVLPRDemoDlg::StartProcessVideo(CString fileName)
 {
 	try
 	{
-
 		int ret =0;
 		recognitionMode = VIDEO;
 		nFrames = 0;
@@ -931,8 +948,11 @@ void PreStartThread(void* pParam)
 	WaitForSingleObject(handleLPRThreadStoped, -1);
 	dlg->GetDlgItem(ID_STATUS)->SetWindowText("...");
 
-	if(dlg->TH_InitDll(1)==false)  //视频方式设为 1 
-		return ;
+	if(dlg->company == WENTONG )
+	{
+		if(dlg->TH_InitDll(1)==false)  //视频方式设为 1 
+			return ;
+	}
 
 	dlg->StartProcessVideo(dlg->mVideoPath);
 
@@ -1187,16 +1207,20 @@ void CVLPRDemoDlg::OnClose()
 {
 	_beginthread(LoadingThread, 0, this);
 
+	this->ShowWindow(SW_HIDE);
+
 	OnBnClickedStop();
-	Sleep(100);
+	Sleep(1000);
 
 	GetDlgItem(ID_STATUS)->SetWindowText("正在退出......");
 	if( CloseThread()>0)
 		debug("非正常退出 @ CDialog::OnClose()  线程未全部关闭");
 	else
 		debug("马上正常退出 @ CDialog::OnClose()");
-	Sleep(100);
-	CDialog::OnClose();
+	Sleep(1000);
+	
+	::PostQuitMessage(0);
+
 }
 
 

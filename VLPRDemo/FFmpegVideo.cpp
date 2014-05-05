@@ -5,7 +5,87 @@
 
 FFmpegVideo::FFmpegVideo(void)
 {
+	pCodecCtx = NULL;
+	av_register_all();
+
 }
+
+long FFmpegVideo::SaveFrame2jpeg (AVCodecContext *pCodecCtxIn, AVFrame *pFrame, char *fileName)
+{
+	uint8_t                *Buffer=0; 
+	int                     BufSiz=0; 
+	int                     BufSizActua=0l; 
+	int                     ImgFmt = PIX_FMT_YUVJ420P; //for the newer ffmpeg version, this int to pixelformat 
+	FILE                   *JPEGFile=0; 
+
+	pFrame->pts     = 1; 
+	pFrame->quality = pCodecCtxIn->global_quality; 
+
+	BufSiz = avpicture_get_size ( PIX_FMT_BGR24, pCodecCtxIn->width, pCodecCtxIn->height ); 
+
+	Buffer = (uint8_t *)malloc ( BufSiz ); 
+	if ( Buffer == NULL ) 
+		return 0; 
+	memset ( Buffer, 0, BufSiz ); 
+
+	long BufSizActual = avcodec_encode_video( pCodecCtx, Buffer, BufSiz, pFrame ); 
+
+	JPEGFile = fopen ( fileName, "wb" ); 
+	fwrite ( Buffer, 1, BufSizActual, JPEGFile ); 
+	fclose ( JPEGFile ); 
+
+	free ( Buffer ); 
+
+	return  BufSizActual; 
+}
+
+long FFmpegVideo::Save2jpeg (uint8_t *buffer, int width, int height, char *fileName)
+{ 
+		AVFrame *pFrame = 0 ;
+
+		pFrame = avcodec_alloc_frame();
+		if(pFrame==0)
+			return -1;
+
+		avpicture_fill((AVPicture *)pFrame, buffer, PIX_FMT_BGR24, width,  height);//
+		pFrame->width = width;
+		pFrame->height = height;
+		pFrame->format = PIX_FMT_BGR24;
+
+		AVCodec  *pCodec = 0;
+		//  寻找视频流的解码器
+		pCodec = avcodec_find_encoder ( CODEC_ID_MJPEG ); 
+
+		AVCodecContext *pCodeContext = 0 ;
+		// 得到视频流编码上下文的指针
+		pCodeContext = avcodec_alloc_context();
+		if(pCodeContext==NULL)
+			return -1;
+
+		if(pCodecCtx!=0){
+			avcodec_copy_context(pCodeContext, pCodecCtx);
+		}
+		
+		pCodeContext->pix_fmt       = PIX_FMT_BGR24; 
+		pCodeContext->codec_id      = CODEC_ID_MJPEG; 
+		pCodeContext->codec_type    = AVMEDIA_TYPE_VIDEO;//CODEC_TYPE_VIDEO; 
+
+		pCodeContext->width			= width;
+		pCodeContext->height		= height;
+
+		// 打开解码器
+		if(avcodec_open(pCodeContext, pCodec)<0){
+		//	return -1;//handle_error(); // 打不开解码器
+		}
+
+		int BufSizActual =  SaveFrame2jpeg( pCodeContext, pFrame, fileName);
+
+		av_free(pFrame);
+		// Close the codec
+		avcodec_close(pCodecCtx);
+
+		return BufSizActual;
+} 
 
 
 

@@ -9,6 +9,8 @@
 #include "afxcmn.h"
 #include "afxwin.h"
 
+#include "ximage.h"
+
 #include "Config.h"
 #include "LoadingDlg.h"
 #include "TH_PlateID.h"

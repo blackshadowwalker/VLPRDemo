@@ -1,4 +1,168 @@
 
+Revision: 35
+Author: karl.li
+Date: 2014年5月5日 14:56:42
+Message:
+加入CxImagem,用来保存jpg图片
+----
+Added : /CxImage
+Added : /CxImage/Doxyfile.txt
+Added : /CxImage/cximage.vcproj
+Added : /CxImage/license.txt
+Added : /CxImage/memdc.h
+Added : /CxImage/stdint.h
+Added : /CxImage/tif_xfile.cpp
+Added : /CxImage/xfile.h
+Added : /CxImage/ximabmp.cpp
+Added : /CxImage/ximabmp.h
+Added : /CxImage/ximacfg.h
+Added : /CxImage/ximadef.h
+Added : /CxImage/ximadsp.cpp
+Added : /CxImage/ximaenc.cpp
+Added : /CxImage/ximaexif.cpp
+Added : /CxImage/ximage.cpp
+Added : /CxImage/ximage.h
+Added : /CxImage/ximagif.cpp
+Added : /CxImage/ximagif.h
+Added : /CxImage/ximahist.cpp
+Added : /CxImage/ximaico.cpp
+Added : /CxImage/ximaico.h
+Added : /CxImage/ximainfo.cpp
+Added : /CxImage/ximaint.cpp
+Added : /CxImage/ximaiter.h
+Added : /CxImage/ximajas.cpp
+Added : /CxImage/ximajas.h
+Added : /CxImage/ximajbg.cpp
+Added : /CxImage/ximajbg.h
+Added : /CxImage/ximajpg.cpp
+Added : /CxImage/ximajpg.h
+Added : /CxImage/ximalpha.cpp
+Added : /CxImage/ximalyr.cpp
+Added : /CxImage/ximamng.cpp
+Added : /CxImage/ximamng.h
+Added : /CxImage/ximapal.cpp
+Added : /CxImage/ximapcx.cpp
+Added : /CxImage/ximapcx.h
+Added : /CxImage/ximapng.cpp
+Added : /CxImage/ximapng.h
+Added : /CxImage/ximapsd.cpp
+Added : /CxImage/ximapsd.h
+Added : /CxImage/ximaraw.cpp
+Added : /CxImage/ximaraw.h
+Added : /CxImage/ximasel.cpp
+Added : /CxImage/ximaska.cpp
+Added : /CxImage/ximaska.h
+Added : /CxImage/ximatga.cpp
+Added : /CxImage/ximatga.h
+Added : /CxImage/ximath.cpp
+Added : /CxImage/ximath.h
+Added : /CxImage/ximatif.cpp
+Added : /CxImage/ximatif.h
+Added : /CxImage/ximatran.cpp
+Added : /CxImage/ximawbmp.cpp
+Added : /CxImage/ximawbmp.h
+Added : /CxImage/ximawmf.cpp
+Added : /CxImage/ximawmf.h
+Added : /CxImage/ximawnd.cpp
+Added : /CxImage/xiofile.h
+Added : /CxImage/xmd5.c
+Added : /CxImage/xmd5.h
+Added : /CxImage/xmemfile.cpp
+Added : /CxImage/xmemfile.h
+Modified : /README.md
+Modified : /Release/VLPRConfig.ini
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/FFmpegVideo.cpp
+Modified : /VLPRDemo/FFmpegVideo.h
+Modified : /VLPRDemo/VLPRDemo.vcproj
+Deleted : /VLPRDemo/VLPRDemo.vcproj.teleframe-PC.teleframe.user
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo/VLPRDemoDlg.h
+Modified : /VLPRDemo.sln
+Modified : /VLPRDemo.suo
+Added : /bin
+Added : /bin/RecoCore.dll
+Added : /bin/SDL.dll
+Added : /bin/SkinPPWTL.dll
+Added : /bin/TFLPRecognition.dll
+Added : /bin/TH_PLATEID.dll
+Added : /bin/VLPRConfig.ini
+Added : /bin/avcodec.dll
+Added : /bin/avcore.dll
+Added : /bin/avdevice.dll
+Added : /bin/avfilter.dll
+Added : /bin/avformat.dll
+Added : /bin/avutil.dll
+Added : /bin/jpeg62.dll
+Added : /bin/lib
+Added : /bin/lib/cximage.lib
+Added : /bin/mid
+Added : /bin/postproc.dll
+Added : /bin/pthreadGC2.dll
+Added : /bin/pthreadVC2.dll
+Added : /bin/skin
+Added : /bin/skin/AquaOS.ssk
+Added : /bin/swscale.dll
+Added : /jpeg
+Added : /jpeg/jconfig.h
+Added : /jpeg/jerror.h
+Added : /jpeg/jmorecfg.h
+Added : /jpeg/jpeg.lib
+Added : /jpeg/jpeglib.h
+Added : /jpeg/turbojpeg-static.lib
+Added : /jpeg/turbojpeg.h
+Added : /jpeg/turbojpeg.lib
+
+Revision: 34
+Author: karl.li
+Date: 2014年5月5日 10:18:48
+Message:
+
+----
+Modified : /README.md
+
+Revision: 33
+Author: karl.li
+Date: 2014年5月5日 10:18:36
+Message:
+修改输出命名格式
+----
+Modified : /VLPRDemo/LoadingDlg.cpp
+Modified : /VLPRDemo/LoadingDlg.h
+Modified : /VLPRDemo/VLPRDemo.cpp
+Modified : /VLPRDemo/VLPRDemo.vcproj
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+
+Revision: 32
+Author: karl.li
+Date: 2014年3月3日 9:41:59
+Message:
+add doc
+----
+Added : /doc
+Added : /doc/信帧智能交通套牌车识别使用手册.docx
+
+Revision: 31
+Author: karl.li
+Date: 2014年3月3日 9:41:38
+Message:
+修复了一些崩溃问题  V1.1
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo.suo
+
+Revision: 30
+Author: karl.li
+Date: 2014年2月27日 18:32:17
+Message:
+
+----
+Modified : /Release/VLPRDemo.exe
+Modified : /VLPRDemo/VLPRDemoDlg.cpp
+Modified : /VLPRDemo.suo
+Modified : /svnlog.txt
+
+
 
 Revision: 29
 Author: karl.li

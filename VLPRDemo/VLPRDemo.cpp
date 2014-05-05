@@ -42,7 +42,7 @@ CString CVLPRDemoApp::m_appPath="";
 
 BOOL CVLPRDemoApp::InitInstance()
 {
-	skinppLoadSkin(_T("skin/AquaOS.ssk"));
+//	skinppLoadSkin(_T("skin/AquaOS.ssk"));
 //	skinppLoadSkin(_T(""));
 
 	CString g_szOcxPath = this->m_pszHelpFilePath;

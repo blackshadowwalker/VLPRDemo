@@ -18,10 +18,10 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="..\bin"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			UseOfMFC="0"
+			UseOfMFC="1"
 			CharacterSet="2"
 			>
 			<Tool
@@ -44,8 +44,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa&#x0D;&#x0A;"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ffmpeg/include;../SDL/include;../include"
+				AdditionalIncludeDirectories="../ffmpeg/include;../SDL/include;../include;..\CxImage\"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -68,9 +69,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nafxcwd.lib libcmtd.lib"
+				AdditionalDependencies="nafxcwd.lib libcmtd.lib cximage.lib jpeg.lib turbojpeg.lib turbojpeg-static.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="../ffmpeg/lib;../lib"
+				AdditionalLibraryDirectories="../ffmpeg/lib;../lib;..\bin\lib;..\jpeg"
 				IgnoreDefaultLibraryNames="nafxcwd.lib;libcmtd.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -100,10 +101,10 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="..\bin"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			UseOfMFC="0"
+			UseOfMFC="1"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -130,7 +131,7 @@
 				AdditionalOptions="/EHa&#x0D;&#x0A;"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="../ffmpeg/include;../SDL/include;../include"
+				AdditionalIncludeDirectories="../ffmpeg/include;../SDL/include;../include;..\CxImage\"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
@@ -153,8 +154,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="cximage.lib jpeg.lib turbojpeg.lib turbojpeg-static.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="../ffmpeg/lib;../lib"
+				AdditionalLibraryDirectories="../ffmpeg/lib;../lib;..\bin\lib;..\jpeg"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
